@@ -24,6 +24,8 @@ Feature: Authentication Module - UI
     When I log out
     Then a logout success message "You have been logged out successfully." should be displayed
     And I should be redirected to the login page
+    When I force navigate to "/ui/dashboard"
+    Then I should be redirected to the login page
 
   Scenario: T-UI-16 - Valid user login redirects to the dashboard
     Given I log in as User with username "testuser" and password "test123"
@@ -33,6 +35,7 @@ Feature: Authentication Module - UI
     Given I log in as User with username "testuser" and password "test123"
     Then I should be on the dashboard page
     And the dashboard should display summary cards for "Categories", "Plants" and "Sales"
+    And the dashboard summary cards should show numeric values
 
   # The app only applies the "active" highlight on /ui/sales and /ui/dashboard;
   # /ui/categories and /ui/plants never mark their nav link active (minor UI bug).

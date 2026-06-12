@@ -15,6 +15,10 @@ public class DashboardPage extends PageObject {
     @FindBy(css = ".dashboard-card h6")
     private List<WebElementFacade> summaryCardTitles;
 
+    // Numeric summary values inside the cards (Main/Sub, Total/Low stock, Revenue/Sales count)
+    @FindBy(css = ".dashboard-card .fw-bold.fs-5")
+    private List<WebElementFacade> summaryCardValues;
+
     // Sidebar nav link that matches the current page gets the "active" class (layout.html)
     @FindBy(css = "a.nav-link.active")
     private WebElementFacade activeNavLink;
@@ -29,6 +33,13 @@ public class DashboardPage extends PageObject {
 
     public List<String> getSummaryCardTitles() {
         return summaryCardTitles.stream()
+                .map(WebElementFacade::getText)
+                .map(String::trim)
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getSummaryValues() {
+        return summaryCardValues.stream()
                 .map(WebElementFacade::getText)
                 .map(String::trim)
                 .collect(Collectors.toList());

@@ -1,6 +1,5 @@
 package qatraining.steps;
 
-import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
 import qatraining.pages.DashboardPage;
@@ -19,11 +18,6 @@ public class UiAuthSteps {
 
     private LoginPage loginPage;
     private DashboardPage dashboardPage;
-
-    @Given("I am on the login page")
-    public void onLoginPage() {
-        loginPage.open();
-    }
 
     @When("I submit the login form with username {string} and password {string}")
     public void submitLoginForm(String username, String password) {
@@ -81,5 +75,13 @@ public class UiAuthSteps {
     @Then("the {string} navigation link should be active")
     public void navigationLinkActive(String expected) {
         assertThat(dashboardPage.getActiveNavText()).isEqualTo(expected);
+    }
+
+    @Then("the dashboard summary cards should show numeric values")
+    public void dashboardSummaryValues() {
+        List<String> values = dashboardPage.getSummaryValues();
+        assertThat(values).isNotEmpty();
+        assertThat(values).allMatch(v -> v.matches(".*\\d.*"),
+                "each summary value should contain a number");
     }
 }

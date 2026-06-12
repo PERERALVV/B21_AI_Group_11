@@ -1,0 +1,96 @@
+name: CI
+
+# Runs the full Serenity + Cucumber suite (every *TestSuite runner) on each push/PR.
+# New modules are picked up automatically: as members add their own *TestSuite
+# runner under src/test/java/qatraining/runners/, failsafe discovers it via its
+# **/*TestSuite.java include — no change to this workflow is needed.
+
+on:
+  push:
+    branches: [ kaushi ]
+  pull_request:
+
+# Allow the workflow to push the generated report to the gh-pages branch
+permissions:
+  contents: write
+
+jobs:
+  auth-tests:
+    name: Test suite
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: qa_training
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=15
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Start the QA Training App
+        run: |
+          java -jar "app/qa-training-app.jar" \
+            --spring.datasource.password=root \
+            > app.log 2>&1 &
+          echo "APP_PID=$!" >> "$GITHUB_ENV"
+
+      - name: Wait for the app on :8080
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:8080/ui/login >/dev/null; then
+              echo "App is up after ${i} tries"; exit 0
+            fi
+            sleep 2
+          done
+          echo "App did not start in time"; tail -n 100 app.log; exit 1
+
+      - name: Run all Serenity + Cucumber suites (headless Chrome)
+        # -Dmaven.test.failure.ignore=true: do NOT fail the pipeline on test
+        # failures. The Serenity report captures every pass/fail; failing tests
+        # are QA findings, not a broken build.
+        run: mvn -B clean verify -Dmaven.test.failure.ignore=true
+
+      - name: Stop the app
+        if: always()
+        run: kill "${APP_PID}" 2>/dev/null || true
+
+      - name: Upload Serenity HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: serenity-report
+          path: target/site/serenity
+
+      # Publish the report to the gh-pages branch (served as a static site).
+      # Runs on pushes only (PRs from forks lack a write token).
+      - name: Publish Serenity report to GitHub Pages
+        if: always() && github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/site/serenity
+          force_orphan: true
+
+      - name: Upload app log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-log
+          path: app.log

@@ -41,9 +41,19 @@ public class SellPlantPage extends PageObject {
         Select select = new Select(plantDropdown);
         for (int i = 1; i < select.getOptions().size(); i++) {
             String text = select.getOptions().get(i).getText();
-            if (text.contains("Stock:") && !text.contains("Stock: 0)")) {
-                select.selectByIndex(i);
-                return;
+            if (text.contains("Stock:")) {
+                java.util.regex.Pattern p = java.util.regex.Pattern.compile("Stock:\\s*(\\d+)");
+                java.util.regex.Matcher m = p.matcher(text);
+                if (m.find()) {
+                    int stock = Integer.parseInt(m.group(1));
+                    if (stock >= 2) {
+                        select.selectByIndex(i);
+                        return;
+                    }
+                } else if (!text.contains("Stock: 0)") && !text.contains("Stock: 1)")) {
+                    select.selectByIndex(i);
+                    return;
+                }
             }
         }
         if (select.getOptions().size() > 1) {

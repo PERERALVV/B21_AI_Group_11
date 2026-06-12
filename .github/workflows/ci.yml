@@ -9,6 +9,10 @@ on:
     branches: [ Janith, main ]
   pull_request:
 
+# Allow the workflow to push the generated report to the gh-pages branch
+permissions:
+  contents: write
+
 jobs:
   auth-tests:
     name: Authentication test suite
@@ -69,6 +73,16 @@ jobs:
         with:
           name: serenity-report
           path: target/site/serenity
+
+      # Publish the report to the gh-pages branch (served as a static site).
+      # Runs on pushes only (PRs from forks lack a write token).
+      - name: Publish Serenity report to GitHub Pages
+        if: always() && github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target/site/serenity
+          force_orphan: true
 
       - name: Upload app log on failure
         if: failure()

@@ -58,6 +58,8 @@ public class ApiSalesSteps {
 
     @Given("I have a valid plant ID with stock")
     public void fetchValidPlantId() {
+        qatraining.api.PreconditionHelper.ensurePreconditionsExist(token);
+        
         Response response = SerenityRest.given()
                 .header("Authorization", "Bearer " + token)
                 .when()
@@ -70,6 +72,8 @@ public class ApiSalesSteps {
                 return;
             }
         }
+        
+        // Final fallback if something failed, but PreconditionHelper ensures this won't happen
         plantId = 1L;
     }
 
@@ -101,7 +105,10 @@ public class ApiSalesSteps {
 
     @Given("I have a valid sale ID")
     public void fetchValidSaleId() {
-        Response response = salesApiActions.getAllSales(token);
+        String adminToken = authApiActions.getJwtToken("admin", "admin123");
+        qatraining.api.PreconditionHelper.ensurePreconditionsExist(adminToken);
+        
+        Response response = salesApiActions.getAllSales(adminToken);
         if (response.getStatusCode() == 200) {
             List<Integer> ids = response.jsonPath().getList("id");
             if (ids != null && !ids.isEmpty()) {
@@ -110,12 +117,51 @@ public class ApiSalesSteps {
             }
         }
         
-        fetchValidPlantId();
-        Response postResponse = salesApiActions.sellPlant(token, plantId, 1);
+        Long pid = 1L;
+        Response plantResponse = SerenityRest.given()
+                .header("Authorization", "Bearer " + adminToken)
+                .get("/api/plants");
+        if (plantResponse.getStatusCode() == 200) {
+            List<Integer> ids = plantResponse.jsonPath().getList("id");
+            if (ids != null && !ids.isEmpty()) {
+                pid = Long.valueOf(ids.get(0));
+            }
+        }
+        
+        Response postResponse = salesApiActions.sellPlant(adminToken, pid, 1);
         if (postResponse.getStatusCode() == 201) {
             saleId = postResponse.jsonPath().getLong("id");
         } else {
             saleId = 1L;
+        }
+    }
+
+    @Given("there is at least one sale record in the database")
+    public void ensureAtLeastOneSaleRecordInDb() {
+        String adminToken = authApiActions.getJwtToken("admin", "admin123");
+        qatraining.api.PreconditionHelper.ensurePreconditionsExist(adminToken);
+        
+        Response response = salesApiActions.getAllSales(adminToken);
+        int currentCount = 0;
+        if (response.getStatusCode() == 200) {
+            List<?> list = response.getBody().as(List.class);
+            if (list != null) {
+                currentCount = list.size();
+            }
+        }
+        
+        if (currentCount == 0) {
+            Long pid = 1L;
+            Response plantResponse = SerenityRest.given()
+                    .header("Authorization", "Bearer " + adminToken)
+                    .get("/api/plants");
+            if (plantResponse.getStatusCode() == 200) {
+                List<Integer> ids = plantResponse.jsonPath().getList("id");
+                if (ids != null && !ids.isEmpty()) {
+                    pid = Long.valueOf(ids.get(0));
+                }
+            }
+            salesApiActions.sellPlant(adminToken, pid, 1);
         }
     }
 

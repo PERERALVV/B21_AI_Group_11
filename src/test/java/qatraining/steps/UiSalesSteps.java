@@ -12,7 +12,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class UiSalesSteps {
+
+    private static final Logger logger = LoggerFactory.getLogger(UiSalesSteps.class);
 
     private SalesListPage salesListPage;
     private SellPlantPage sellPlantPage;
@@ -49,14 +55,54 @@ public class UiSalesSteps {
         }
     }
 
+    private Long getValidPlantId(String token) {
+        io.restassured.response.Response response = io.restassured.RestAssured.given()
+                .header("Authorization", "Bearer " + token)
+                .get("/api/plants");
+        if (response.getStatusCode() == 200) {
+            List<Integer> ids = response.jsonPath().getList("id");
+            if (ids != null && !ids.isEmpty()) {
+                return Long.valueOf(ids.get(0));
+            }
+        }
+        throw new IllegalStateException("No plants found in database to create sales preconditions!");
+    }
+
+    @Given("there are at least {int} sales records in the database")
+    public void ensureSalesRecordsExist(int count) {
+        String adminToken = new qatraining.api.AuthApiActions().getJwtToken("admin", "admin123");
+        qatraining.api.PreconditionHelper.ensurePreconditionsExist(adminToken);
+        
+        qatraining.api.SalesApiActions apiActions = new qatraining.api.SalesApiActions();
+        io.restassured.response.Response response = apiActions.getAllSales(adminToken);
+        int currentCount = 0;
+        if (response.getStatusCode() == 200) {
+            List<?> list = response.getBody().as(List.class);
+            if (list != null) {
+                currentCount = list.size();
+            }
+        }
+        
+        if (currentCount < count) {
+            Long pid = getValidPlantId(adminToken);
+            int needed = count - currentCount;
+            for (int i = 0; i < needed; i++) {
+                apiActions.sellPlant(adminToken, pid, 1);
+            }
+        }
+    }
+
     @Given("there are more than 2 sales records in the list")
     public void verifySalesCountGreaterThanTwo() {
+        String adminToken = new qatraining.api.AuthApiActions().getJwtToken("admin", "admin123");
+        qatraining.api.PreconditionHelper.ensurePreconditionsExist(adminToken);
+        
         if (salesListPage.getSalesRowCount() <= 2) {
-            String adminToken = new qatraining.api.AuthApiActions().getJwtToken("admin", "admin123");
+            Long pid = getValidPlantId(adminToken);
             qatraining.api.SalesApiActions apiActions = new qatraining.api.SalesApiActions();
-            apiActions.sellPlant(adminToken, 1L, 1);
-            apiActions.sellPlant(adminToken, 1L, 1);
-            apiActions.sellPlant(adminToken, 1L, 1);
+            apiActions.sellPlant(adminToken, pid, 1);
+            apiActions.sellPlant(adminToken, pid, 1);
+            apiActions.sellPlant(adminToken, pid, 1);
             salesListPage.open();
         }
         assertThat(salesListPage.getSalesRowCount()).isGreaterThan(2);
@@ -152,11 +198,16 @@ public class UiSalesSteps {
 
     @Given("at least one plant has stock")
     public void verifyAtLeastOnePlantHasStock() {
+        String adminToken = new qatraining.api.AuthApiActions().getJwtToken("admin", "admin123");
+        qatraining.api.PreconditionHelper.ensurePreconditionsExist(adminToken);
+        
         sellPlantPage.open();
         sellPlantPage.selectFirstAvailablePlantWithStock();
         String selected = sellPlantPage.getSelectedPlantText();
+        logger.info("[UiSalesSteps] Selected plant for stock check: {}", selected);
         assertThat(selected).isNotEmpty();
         assertThat(selected).doesNotContain("Stock: 0)");
+        assertThat(selected).doesNotContain("Stock: 1)");
         salesListPage.open();
     }
 
@@ -199,6 +250,9 @@ public class UiSalesSteps {
 
     @Then("I should be redirected to the sales list page")
     public void verifyRedirectionToSalesList() {
+        logger.info("[UiSalesSteps] Waiting for redirection to /ui/sales...");
+        new org.openqa.selenium.support.ui.WebDriverWait(salesListPage.getDriver(), java.time.Duration.ofSeconds(10))
+                .until(org.openqa.selenium.support.ui.ExpectedConditions.urlMatches(".*\\/ui\\/sales$"));
         assertThat(salesListPage.getDriver().getCurrentUrl()).endsWith("/ui/sales");
     }
 
@@ -246,9 +300,12 @@ public class UiSalesSteps {
 
     @Given("there is at least one sale record")
     public void verifyAtLeastOneSaleRecord() {
+        String adminToken = new qatraining.api.AuthApiActions().getJwtToken("admin", "admin123");
+        qatraining.api.PreconditionHelper.ensurePreconditionsExist(adminToken);
+        
         if (salesListPage.getSalesRowCount() == 0) {
-            String adminToken = new qatraining.api.AuthApiActions().getJwtToken("admin", "admin123");
-            new qatraining.api.SalesApiActions().sellPlant(adminToken, 1L, 1);
+            Long pid = getValidPlantId(adminToken);
+            new qatraining.api.SalesApiActions().sellPlant(adminToken, pid, 1);
             salesListPage.open();
         }
         assertThat(salesListPage.getSalesRowCount()).isGreaterThanOrEqualTo(1);
@@ -273,21 +330,9 @@ public class UiSalesSteps {
 
     @Then("the sale record should be removed from the list")
     public void verifySaleRemoved() {
-        int salesCountAfterDelete = 0;
-        for (int i = 0; i < 10; i++) {
-            salesCountAfterDelete = salesListPage.getSalesRowCount();
-            if (salesCountAfterDelete == salesCountBeforeDelete - 1) {
-                break;
-            }
-            try { Thread.sleep(500); } catch (InterruptedException e) {}
-        }
-        if (salesCountAfterDelete == salesCountBeforeDelete) {
-            String errorMsg = salesListPage.findAll(org.openqa.selenium.By.cssSelector("div.alert-danger")).size() > 0 ?
-                    salesListPage.findAll(org.openqa.selenium.By.cssSelector("div.alert-danger")).get(0).getText().trim() : "";
-            System.out.println("--------------------------------------------------");
-            System.out.println("ALERT! UI Deletion failed. Error message displayed: " + errorMsg);
-            System.out.println("--------------------------------------------------");
-        }
+        new org.openqa.selenium.support.ui.WebDriverWait(salesListPage.getDriver(), java.time.Duration.ofSeconds(10))
+                .until(driver -> salesListPage.getSalesRowCount() == salesCountBeforeDelete - 1);
+        int salesCountAfterDelete = salesListPage.getSalesRowCount();
         assertThat(salesCountAfterDelete).isEqualTo(salesCountBeforeDelete - 1);
     }
 

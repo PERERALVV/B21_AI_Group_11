@@ -119,6 +119,8 @@ public class SalesListPage extends PageObject {
     }
 
     public String getAlertTextAndAccept() {
+        new org.openqa.selenium.support.ui.WebDriverWait(getDriver(), java.time.Duration.ofSeconds(5))
+                .until(org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent());
         Alert alert = getDriver().switchTo().alert();
         String text = alert.getText();
         alert.accept();
@@ -126,6 +128,8 @@ public class SalesListPage extends PageObject {
     }
 
     public String getAlertTextAndDismiss() {
+        new org.openqa.selenium.support.ui.WebDriverWait(getDriver(), java.time.Duration.ofSeconds(5))
+                .until(org.openqa.selenium.support.ui.ExpectedConditions.alertIsPresent());
         Alert alert = getDriver().switchTo().alert();
         String text = alert.getText();
         alert.dismiss();

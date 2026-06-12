@@ -5,6 +5,7 @@ Feature: Sales Module UI Testing
 
   Scenario: T-UI-1 - Check sales list pagination and default sorting
     Given I log in as Admin with username "admin" and password "admin123"
+    And there are at least 6 sales records in the database
     When I navigate to the sales list page
     Then I should see the sales list loaded with pagination
     And the table headers should be "Plant name", "Quantity", "Total price", and "Sold date"
@@ -38,6 +39,7 @@ Feature: Sales Module UI Testing
 
   Scenario: T-UI-4 - Test validation messages for selling a plant
     Given I log in as Admin with username "admin" and password "admin123"
+    And at least one plant has stock
     And I navigate to the "Sell Plant" page
     When I click the "Sell" button without selecting a plant
     Then I should see the validation message "Plant is required" for the plant field
@@ -57,6 +59,7 @@ Feature: Sales Module UI Testing
 
   Scenario: T-UI-6 - Check read-only access to sales list
     Given I log in as User with username "testuser" and password "test123"
+    And there is at least one sale record
     When I navigate to the sales list page
     Then I should see the sales list loaded with pagination
     And the columns "Plant Name", "Quantity", "Total Price", and "Date" must display correct data
@@ -69,6 +72,7 @@ Feature: Sales Module UI Testing
 
   Scenario: T-UI-8 - Check if Admin buttons are hidden
     Given I log in as User with username "testuser" and password "test123"
+    And there is at least one sale record
     When I navigate to the sales list page
     Then the "Sell Plant" button should not be visible
     And the "Delete" action buttons should not be visible for any record

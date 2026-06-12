@@ -10,7 +10,7 @@ public class AccessDeniedPage extends PageObject {
     private WebElementFacade accessDeniedHeader;
 
     public boolean isDisplayed() {
-        return accessDeniedHeader.isPresent() && 
-               accessDeniedHeader.getText().trim().equals("403 - Access Denied");
+        accessDeniedHeader.waitUntilVisible();
+        return accessDeniedHeader.getText().trim().equals("403 - Access Denied");
     }
 }

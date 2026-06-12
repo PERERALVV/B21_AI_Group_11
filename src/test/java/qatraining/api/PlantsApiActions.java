@@ -100,7 +100,7 @@ public class PlantsApiActions {
                 .delete("/api/plants/" + plantId);
     }
 
-    @Step("Get sub-category ID from the categories list")
+    @Step("Get sub-category ID from the categories list, creating one if none exists")
     public Long getSubCategoryId(String token) {
         Response response = SerenityRest.given()
                 .header("Authorization", "Bearer " + token)
@@ -111,25 +111,82 @@ public class PlantsApiActions {
 
         if (response.getStatusCode() == 200) {
             java.util.List<java.util.Map<String, Object>> categories = response.jsonPath().getList("");
-            for (java.util.Map<String, Object> cat : categories) {
-                // API returns "parentName": "-" for root categories and a real name for sub-categories
-                Object parentName = cat.get("parentName");
-                if (parentName != null && !"-".equals(parentName.toString())) {
-                    Object id = cat.get("id");
-                    if (id instanceof Integer) return Long.valueOf((Integer) id);
-                    if (id instanceof Long) return (Long) id;
-                }
-            }
-            // Fallback: return first non-root category found or default
-            for (java.util.Map<String, Object> cat : categories) {
-                Object parentName = cat.get("parentName");
-                if (parentName != null) {
-                    Object id = cat.get("id");
-                    if (id instanceof Integer) return Long.valueOf((Integer) id);
-                    if (id instanceof Long) return (Long) id;
+            if (categories != null) {
+                for (java.util.Map<String, Object> cat : categories) {
+                    Object parentName = cat.get("parentName");
+                    if (parentName != null && !"-".equals(parentName.toString())) {
+                        Object id = cat.get("id");
+                        if (id instanceof Integer) return Long.valueOf((Integer) id);
+                        if (id instanceof Long) return (Long) id;
+                    }
                 }
             }
         }
-        return 3L;
+
+        // No sub-category found — create one
+        return createSubCategory(token);
+    }
+
+    private Long createSubCategory(String token) {
+        // Find or create a root category first
+        Long rootId = findOrCreateRootCategory(token);
+
+        // Create sub-category under that root
+        Map<String, Object> parent = new HashMap<>();
+        parent.put("id", rootId);
+        Map<String, Object> body = new HashMap<>();
+        body.put("name", "Indoor");
+        body.put("parent", parent);
+
+        Response response = SerenityRest.given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .baseUri("http://localhost:8080")
+                .body(body)
+                .when()
+                .post("/api/categories");
+
+        if (response.getStatusCode() == 201) {
+            return response.jsonPath().getLong("id");
+        }
+        throw new IllegalStateException(
+                "Failed to create sub-category. Status: " + response.getStatusCode()
+                + " Body: " + response.getBody().asString());
+    }
+
+    private Long findOrCreateRootCategory(String token) {
+        Response response = SerenityRest.given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .baseUri("http://localhost:8080")
+                .when()
+                .get("/api/categories/main");
+
+        if (response.getStatusCode() == 200) {
+            java.util.List<java.util.Map<String, Object>> mains = response.jsonPath().getList("");
+            if (mains != null && !mains.isEmpty()) {
+                Object id = mains.get(0).get("id");
+                if (id instanceof Integer) return Long.valueOf((Integer) id);
+                if (id instanceof Long) return (Long) id;
+            }
+        }
+
+        // No root category — create one
+        Map<String, Object> body = new HashMap<>();
+        body.put("name", "Plants");
+        Response created = SerenityRest.given()
+                .header("Authorization", "Bearer " + token)
+                .contentType(ContentType.JSON)
+                .baseUri("http://localhost:8080")
+                .body(body)
+                .when()
+                .post("/api/categories");
+
+        if (created.getStatusCode() == 201) {
+            return created.jsonPath().getLong("id");
+        }
+        throw new IllegalStateException(
+                "Failed to create root category. Status: " + created.getStatusCode()
+                + " Body: " + created.getBody().asString());
     }
 }

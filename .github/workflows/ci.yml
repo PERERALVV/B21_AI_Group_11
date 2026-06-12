@@ -7,7 +7,7 @@ name: CI
 
 on:
   push:
-    branches: [ kaushi ]
+    branches: [ integration-kaushi ]
   pull_request:
 
 # Allow the workflow to push the generated report to the gh-pages branch

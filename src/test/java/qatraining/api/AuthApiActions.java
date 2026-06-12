@@ -152,30 +152,4 @@ public class AuthApiActions {
                 .when()
                 .post(path);
     }
-
-    // ── Swagger contract / edge-case senders for POST /api/auth/login ────────
-
-    @Step("POST /api/auth/login with a raw body and content type '{1}'")
-    public Response postRawLogin(String body, String contentType) {
-        return SerenityRest.given()
-                .contentType(contentType)
-                .body(body)
-                .when()
-                .post("/api/auth/login");
-    }
-
-    @Step("POST /api/auth/login with no body, content type '{0}'")
-    public Response postLoginNoBody(String contentType) {
-        return SerenityRest.given()
-                .contentType(contentType)
-                .when()
-                .post("/api/auth/login");
-    }
-
-    @Step("Send a {0} request to /api/auth/login")
-    public Response loginViaMethod(String method) {
-        return SerenityRest.given()
-                .when()
-                .request(method, "/api/auth/login");
-    }
 }

@@ -65,3 +65,19 @@ Feature: Plants Module API Testing
     And I have a valid plant ID to retrieve via API
     When I send a DELETE request to remove the plant by ID
     Then the plants API response status code should be 403
+
+  Scenario: T-API-32 - Test PUT /api/plants/{id} with full swagger request body including id and category object
+    Given I am authorized as Admin for the plants API
+    And I have a valid sub-category ID for plant creation
+    And I have a valid plant ID for update operation
+    When I send a PUT request with the full swagger body to update the plant with name "UpdatedPlant" price 75.00 and quantity 5
+    Then the plants API response status code should be 200
+    And the plants API response body should contain the updated plant name "UpdatedPlant"
+
+  Scenario: T-API-31 - Test DELETE /api/plants/{id} on already-deleted plant returns 404 not 204
+    Given I am authorized as Admin for the plants API
+    And I have created a plant specifically for deletion
+    When I send a DELETE request to remove the plant by ID
+    Then the plants API response status code should be 204
+    When I send a DELETE request to remove the plant by ID
+    Then the plants API response status code should be 404

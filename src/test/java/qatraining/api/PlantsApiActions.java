@@ -6,6 +6,7 @@ import io.restassured.specification.RequestSpecification;
 import net.serenitybdd.annotations.Step;
 import net.serenitybdd.rest.SerenityRest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,6 +65,28 @@ public class PlantsApiActions {
             category.put("id", categoryId);
             body.put("category", category);
         }
+        return givenAuth(token)
+                .body(body)
+                .when()
+                .put("/api/plants/" + plantId);
+    }
+
+    @Step("Update plant {1} with full swagger body: name={3}, price={4}, quantity={5}, categoryId={2}")
+    public Response updatePlantWithFullBody(String token, Long plantId, Long categoryId,
+                                            String name, double price, int quantity) {
+        Map<String, Object> category = new HashMap<>();
+        category.put("id", categoryId != null ? categoryId : 0);
+        category.put("name", "");
+        category.put("parent", "");
+        category.put("subCategories", new ArrayList<>());
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("id", plantId);
+        body.put("name", name);
+        body.put("price", price);
+        body.put("quantity", quantity);
+        body.put("category", category);
+
         return givenAuth(token)
                 .body(body)
                 .when()

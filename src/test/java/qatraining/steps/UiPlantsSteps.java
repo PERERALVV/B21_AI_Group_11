@@ -127,6 +127,16 @@ public class UiPlantsSteps {
         assertThat(headers).as("Plants table columns").contains(c1, c2, c3, c4, c5);
     }
 
+    @Then("the fourth column header in the plants table should be {string}")
+    public void verifyFourthColumnHeader(String expectedName) {
+        List<String> headers = plantsListPage.getColumnHeaders();
+        assertThat(headers.size())
+                .as("Plants table should have at least 4 columns").isGreaterThanOrEqualTo(4);
+        assertThat(headers.get(3))
+                .as("Fourth column header should be '%s' (BUG-007: actual header is 'Stock')", expectedName)
+                .isEqualTo(expectedName);
+    }
+
     @Then("each plant row should show Edit and Delete action icons")
     public void verifyEditDeleteIconsPresent() {
         if (plantsListPage.getPlantRowCount() > 0) {

@@ -146,12 +146,29 @@ public class ApiPlantsSteps {
                 .isTrue();
     }
 
-    // T-API-24: PUT update plant 
+    // T-API-24: PUT update plant
 
     @When("I send a PUT request to update the plant with name {string} price {double} and quantity {int}")
     public void sendPutToUpdatePlant(String name, double price, int quantity) {
         assertThat(plantId).as("Plant ID for update").isNotNull();
         lastPlantsResponse = plantsApiActions.updatePlant(token, plantId, categoryId, name, price, quantity);
+    }
+
+    // T-API-32: PUT update plant with full swagger body
+
+    @When("I send a PUT request with the full swagger body to update the plant with name {string} price {double} and quantity {int}")
+    public void sendPutWithFullBodyToUpdatePlant(String name, double price, int quantity) {
+        assertThat(plantId).as("Plant ID for update").isNotNull();
+        if (categoryId == null) fetchSubCategoryId();
+        lastPlantsResponse = plantsApiActions.updatePlantWithFullBody(token, plantId, categoryId, name, price, quantity);
+    }
+
+    @Then("the plants API response body should contain the updated plant name {string}")
+    public void verifyUpdatedPlantName(String expectedName) {
+        String actualName = lastPlantsResponse.jsonPath().getString("name");
+        assertThat(actualName)
+                .as("Updated plant name in response body")
+                .isEqualTo(expectedName);
     }
 
     // T-API-25: DELETE plant

@@ -47,6 +47,13 @@ public class LoginPage extends PageObject {
         enterUsername(username);
         enterPassword(password);
         clickLogin();
+        // Wait for the login redirect to complete and URL to change from /ui/login
+        for (int i = 0; i < 10; i++) {
+            if (!getDriver().getCurrentUrl().contains("/ui/login")) {
+                break;
+            }
+            try { Thread.sleep(500); } catch (InterruptedException e) {}
+        }
     }
 
     public String getUsernameValidationError() {

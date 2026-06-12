@@ -1,18 +1,25 @@
 Feature: Authentication Module - API
   # Member: Janith (215543T) - Authentication.
-  # App auth is stateless JWT: POST /api/auth/login returns {token, tokenType};
-  # the role is carried inside the JWT "roles" claim.
+  # Requests, responses and edge cases are derived from the Swagger contract
+  # (/v3/api-docs). POST /api/auth/login documents ONLY:
+  #   200 -> JwtLoginResponse { token, tokenType }
+  #   400 -> ErrorResponse    { status, error, message, timestamp }
+  # @bug @Contract scenarios assert that contract and currently FAIL because the
+  # app violates it (undocumented 401/500, missing timestamp, internal leakage).
 
-  @T-API-POST-AU-ADM-1 @Admin @API @215543T
+  @T-API-POST-AU-ADM-1 @Admin @API @215543T @Contract
   Scenario: T-API-POST-AU-ADM-1 - Login with valid admin credentials returns a token
     When I log in to the API with username "admin" and password "admin123"
     Then the auth response status should be 200
-    And the auth response should contain a token
+    And the success response should match the JwtLoginResponse schema
 
-  @T-API-POST-AU-ADM-2 @Admin @API @215543T
-  Scenario: T-API-POST-AU-ADM-2 - Login with a wrong password is rejected
+  # Swagger documents only 400 for a bad login; the app returns an undocumented 401
+  # whose body also omits the required "timestamp" (BUG-003).
+  @T-API-POST-AU-ADM-2 @Admin @API @215543T @bug @Contract
+  Scenario: T-API-POST-AU-ADM-2 - Login with a wrong password must return a 400 ErrorResponse
     When I log in to the API with username "admin" and password "wrongpassword"
-    Then the auth response status should be 401
+    Then the auth response status should be 400
+    And the error response should match the Swagger ErrorResponse schema
     And the auth response should not contain a token
 
   # CSV expected 200/204 with the session invalidated. The app is stateless and has
@@ -46,18 +53,20 @@ Feature: Authentication Module - API
     When I send a POST to "/api/categories" using the token with category name "qauser1"
     Then the auth response status should be 403
 
-  # CSV expected 400. The app performs no field-level validation and returns 401
-  # for blank credentials (documented divergence).
-  @T-API-POST-AU-ANON-1 @Anonymous @API @215543T
-  Scenario: T-API-POST-AU-ANON-1 - Login with a blank username is rejected
+  # Per the Swagger contract a malformed/blank request is a 400 ErrorResponse;
+  # the app returns an undocumented 401 (BUG-003).
+  @T-API-POST-AU-ANON-1 @Anonymous @API @215543T @bug @Contract
+  Scenario: T-API-POST-AU-ANON-1 - Login with a blank username must return a 400 ErrorResponse
     When I log in to the API with username "" and password "anypassword"
-    Then the auth response status should be 401
+    Then the auth response status should be 400
+    And the error response should match the Swagger ErrorResponse schema
     And the auth response should not contain a token
 
-  @T-API-POST-AU-ANON-2 @Anonymous @API @215543T
-  Scenario: T-API-POST-AU-ANON-2 - Login with a blank password is rejected
+  @T-API-POST-AU-ANON-2 @Anonymous @API @215543T @bug @Contract
+  Scenario: T-API-POST-AU-ANON-2 - Login with a blank password must return a 400 ErrorResponse
     When I log in to the API with username "admin" and password ""
-    Then the auth response status should be 401
+    Then the auth response status should be 400
+    And the error response should match the Swagger ErrorResponse schema
     And the auth response should not contain a token
 
   @T-API-GET-AU-ANON-3 @Anonymous @API @215543T
@@ -65,8 +74,44 @@ Feature: Authentication Module - API
     When I send a GET to "/api/categories" without a token
     Then the auth response status should be 401
 
-  @T-API-POST-AU-ANON-4 @Anonymous @API @215543T
-  Scenario: T-API-POST-AU-ANON-4 - Login with a non-existent user is rejected
+  @T-API-POST-AU-ANON-4 @Anonymous @API @215543T @bug @Contract
+  Scenario: T-API-POST-AU-ANON-4 - Login with a non-existent user must return a 400 ErrorResponse
     When I log in to the API with username "nobody" and password "anypassword"
-    Then the auth response status should be 401
+    Then the auth response status should be 400
+    And the error response should match the Swagger ErrorResponse schema
     And the auth response should not contain a token
+
+  # Edge cases derived from the Swagger request contract (application/json,
+  # JwtLoginRequest). A malformed body must be a 400 ErrorResponse; the app
+  # returns 500 (BUG-001).
+  @T-API-POST-AU-ANON-5 @Anonymous @API @215543T @bug @Contract
+  Scenario: T-API-POST-AU-ANON-5 - Malformed JSON body must return a 400 ErrorResponse
+    When I send a malformed JSON body to the login endpoint
+    Then the auth response status should be 400
+    And the error response should match the Swagger ErrorResponse schema
+
+  @T-API-POST-AU-ANON-6 @Anonymous @API @215543T @bug @Contract
+  Scenario: T-API-POST-AU-ANON-6 - Missing request body must return a 400 ErrorResponse
+    When I send a login request with no body
+    Then the auth response status should be 400
+    And the error response should match the Swagger ErrorResponse schema
+
+  # The endpoint consumes only application/json; an unsupported media type must be
+  # a client error (415), not a 500 (BUG-001).
+  @T-API-POST-AU-ANON-7 @Anonymous @API @215543T @bug @Contract
+  Scenario: T-API-POST-AU-ANON-7 - Unsupported Content-Type must return 415
+    When I send a valid login body with content type "text/plain"
+    Then the auth response status should be 415
+
+  # Only POST is defined for /api/auth/login; another method must be 405, not 500 (BUG-001).
+  @T-API-GET-AU-ANON-8 @Anonymous @API @215543T @bug @Contract
+  Scenario: T-API-GET-AU-ANON-8 - Unsupported HTTP method must return 405
+    When I send a "GET" request to the login endpoint
+    Then the auth response status should be 405
+
+  # Error responses must carry a safe, generic message; the app leaks internal
+  # class/method/package names and raw parser text (BUG-002).
+  @T-API-POST-AU-ANON-9 @Anonymous @API @215543T @bug @Contract
+  Scenario: T-API-POST-AU-ANON-9 - Error responses must not leak internal details
+    When I send a login request with no body
+    Then the error message must not expose internal class or package names

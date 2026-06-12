@@ -92,6 +92,54 @@ public class ApiAuthSteps {
         assertThat(check.getStatusCode()).isEqualTo(200);
     }
 
+    // ── Swagger contract: edge-case requests to POST /api/auth/login ─────────
+    @When("I send a malformed JSON body to the login endpoint")
+    public void sendMalformedJson() {
+        response = authApi.postRawLogin("{bad", "application/json");
+    }
+
+    @When("I send a login request with no body")
+    public void sendNoBody() {
+        response = authApi.postLoginNoBody("application/json");
+    }
+
+    @When("I send a valid login body with content type {string}")
+    public void sendWithContentType(String contentType) {
+        response = authApi.postRawLogin("{\"username\":\"admin\",\"password\":\"admin123\"}", contentType);
+    }
+
+    @When("I send a {string} request to the login endpoint")
+    public void sendViaMethod(String method) {
+        response = authApi.loginViaMethod(method);
+    }
+
+    // ── Swagger contract: response-schema assertions ────────────────────────
+    @Then("the success response should match the JwtLoginResponse schema")
+    public void successMatchesSchema() {
+        assertThat(response.getStatusCode()).isEqualTo(200);
+        assertThat(response.jsonPath().getString("token")).isNotNull().isNotEmpty();
+        assertThat(response.jsonPath().getString("tokenType")).isEqualTo("Bearer");
+    }
+
+    @Then("the error response should match the Swagger ErrorResponse schema")
+    public void errorMatchesSchema() {
+        JsonPath jp = response.jsonPath();
+        assertThat(jp.getString("error")).as("ErrorResponse.error present").isNotNull();
+        assertThat(jp.getString("message")).as("ErrorResponse.message present").isNotNull();
+        assertThat(jp.getString("timestamp")).as("ErrorResponse.timestamp present (Swagger schema)").isNotNull();
+        assertThat(jp.getInt("status")).as("ErrorResponse.status equals the HTTP status code").isEqualTo(response.getStatusCode());
+    }
+
+    @Then("the error message must not expose internal class or package names")
+    public void errorMessageNoLeak() {
+        String msg = response.jsonPath().getString("message");
+        assertThat(msg).isNotNull();
+        assertThat(msg)
+                .doesNotContain("com.qatraining")
+                .doesNotContain("Controller")
+                .doesNotContain("JSON parse error");
+    }
+
     /** Decode the {@code roles} claim from a JWT payload (middle segment, base64url). */
     private List<String> decodeRoles(String jwt) {
         String payload = jwt.split("\\.")[1];

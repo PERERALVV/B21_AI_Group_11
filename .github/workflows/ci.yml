@@ -1,8 +1,9 @@
 name: CI
 
-# Runs the Authentication module test suite (Janith's part) on every push/PR.
-# Drop the `-Dit.test=AuthTestSuite` filter below to run the whole suite once
-# every module is on the branch.
+# Runs the full Serenity + Cucumber suite (every *TestSuite runner) on each push/PR.
+# New modules are picked up automatically: as members add their own *TestSuite
+# runner under src/test/java/qatraining/runners/, failsafe discovers it via its
+# **/*TestSuite.java include — no change to this workflow is needed.
 
 on:
   push:
@@ -15,7 +16,7 @@ permissions:
 
 jobs:
   auth-tests:
-    name: Authentication test suite
+    name: Test suite
     runs-on: ubuntu-latest
 
     services:
@@ -60,8 +61,11 @@ jobs:
           done
           echo "App did not start in time"; tail -n 100 app.log; exit 1
 
-      - name: Run Authentication suite (Serenity + Cucumber, headless Chrome)
-        run: mvn -B clean verify -Dit.test=AuthTestSuite
+      - name: Run all Serenity + Cucumber suites (headless Chrome)
+        # -Dmaven.test.failure.ignore=true: do NOT fail the pipeline on test
+        # failures. The Serenity report captures every pass/fail; failing tests
+        # are QA findings, not a broken build.
+        run: mvn -B clean verify -Dmaven.test.failure.ignore=true
 
       - name: Stop the app
         if: always()

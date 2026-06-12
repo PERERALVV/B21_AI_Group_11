@@ -96,3 +96,8 @@ Feature: Plants Module UI Testing
     Given I log in as User with username "testuser" and password "test123"
     When I force navigate to "/ui/plants/add"
     Then the user should not be able to access the plant add page
+
+  Scenario: T-UI-31 - Plants table fourth column header should be named Quantity not Stock
+    Given I log in as Admin with username "admin" and password "admin123"
+    When I navigate to the plants list page
+    Then the fourth column header in the plants table should be "Quantity"

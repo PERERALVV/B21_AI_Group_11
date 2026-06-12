@@ -77,6 +77,25 @@ public class UiPlantsSteps {
         ensureAtLeastOnePlantExists();
     }
 
+    @Given("a plant with a two-word name exists in the system")
+    public void ensureTwoWordPlantExists() {
+        String adminToken = new AuthApiActions().getJwtToken("admin", "admin123");
+        PlantsApiActions plantsApi = new PlantsApiActions();
+        Response allPlants = plantsApi.getAllPlants(adminToken);
+        if (allPlants.getStatusCode() == 200) {
+            List<Map<String, Object>> plants = allPlants.jsonPath().getList("");
+            if (plants != null) {
+                for (Map<String, Object> plant : plants) {
+                    if ("Rose Mary".equals(plant.get("name"))) {
+                        return;
+                    }
+                }
+            }
+        }
+        Long categoryId = plantsApi.getSubCategoryId(adminToken);
+        plantsApi.createPlant(adminToken, categoryId, "Rose Mary", 175.0, 3);
+    }
+
     @Given("there are at least 3 plants with distinct values in the database")
     public void ensureAtLeastThreePlantsExist() {
         plantsListPage.open();
@@ -311,6 +330,13 @@ public class UiPlantsSteps {
                 .as("Delete icons should NOT be present for User").isFalse();
     }
 
+    @Then("the Actions column should not be visible in the plants table")
+    public void verifyActionsColumnNotVisible() {
+        assertThat(plantsListPage.isActionsColumnPresent())
+                .as("Actions column header should NOT be visible for a normal User (BUG-004)")
+                .isFalse();
+    }
+
     // ─── T-UI-30: Access denied for unauthorized plant operations ─────────────
 
     @Then("the user should not be able to access the plant add page")
@@ -337,11 +363,13 @@ public class UiPlantsSteps {
     @Then("the plant table should show only plants matching the search term")
     public void verifyPlantSearchResults() {
         int rowCount = plantsListPage.getPlantRowCount();
-        if (rowCount > 0) {
-            assertThat(plantsListPage.allRowsMatchSearch(searchKeyword))
-                    .as("All visible plant rows should match search keyword '%s'", searchKeyword)
-                    .isTrue();
-        }
+        assertThat(rowCount)
+                .as("Search for '%s' should return at least one result (BUG-005: multi-word search returns no results)",
+                        searchKeyword)
+                .isGreaterThan(0);
+        assertThat(plantsListPage.allRowsMatchSearch(searchKeyword))
+                .as("All visible plant rows should match search keyword '%s'", searchKeyword)
+                .isTrue();
     }
 
     // ─── T-UI-28: Filter by category ─────────────────────────────────────────

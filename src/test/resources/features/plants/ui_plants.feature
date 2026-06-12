@@ -61,12 +61,13 @@ Feature: Plants Module UI Testing
     When I navigate to the plants list page
     Then the "Add a Plant" button should not be visible on the plants page
     And no Edit or Delete icons should be present in any plant row
+    And the Actions column should not be visible in the plants table
 
   Scenario: T-UI-27 - User searches for a plant by name
     Given I log in as User with username "testuser" and password "test123"
-    And at least one plant exists in the system
+    And a plant with a two-word name exists in the system
     When I navigate to the plants list page
-    And I type "Aloe" in the search plant field
+    And I type "Rose Mary" in the search plant field
     And I click the Search button on the plants page
     Then the plant table should show only plants matching the search term
 

@@ -1,0 +1,78 @@
+name: CI
+
+# Runs the Authentication module test suite (Janith's part) on every push/PR.
+# Drop the `-Dit.test=AuthTestSuite` filter below to run the whole suite once
+# every module is on the branch.
+
+on:
+  push:
+    branches: [ Janith, main ]
+  pull_request:
+
+jobs:
+  auth-tests:
+    name: Authentication test suite
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: qa_training
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=15
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Start the QA Training App
+        run: |
+          java -jar "app/qa-training-app.jar" \
+            --spring.datasource.password=root \
+            > app.log 2>&1 &
+          echo "APP_PID=$!" >> "$GITHUB_ENV"
+
+      - name: Wait for the app on :8080
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf http://localhost:8080/ui/login >/dev/null; then
+              echo "App is up after ${i} tries"; exit 0
+            fi
+            sleep 2
+          done
+          echo "App did not start in time"; tail -n 100 app.log; exit 1
+
+      - name: Run Authentication suite (Serenity + Cucumber, headless Chrome)
+        run: mvn -B clean verify -Dit.test=AuthTestSuite
+
+      - name: Stop the app
+        if: always()
+        run: kill "${APP_PID}" 2>/dev/null || true
+
+      - name: Upload Serenity HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: serenity-report
+          path: target/site/serenity
+
+      - name: Upload app log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-log
+          path: app.log

@@ -27,7 +27,7 @@ public class ApiPlantsSteps {
     private Long categoryId;
     private Response lastPlantsResponse;
 
-    // ─── Authentication ───────────────────────────────────────────────────────
+    // Authentication
 
     @Given("I am authorized as Admin for the plants API")
     public void authorizeAsAdminForPlantsApi() {
@@ -41,7 +41,7 @@ public class ApiPlantsSteps {
         assertThat(token).as("User JWT token").isNotEmpty();
     }
 
-    // ─── Preconditions ────────────────────────────────────────────────────────
+    // Preconditions
 
     @Given("I have a valid sub-category ID for plant creation")
     public void fetchSubCategoryId() {
@@ -91,7 +91,7 @@ public class ApiPlantsSteps {
         plantId = 1L;
     }
 
-    // ─── T-API-21: POST create plant (happy path) ─────────────────────────────
+    // T-API-21: POST create plant
 
     @When("I send a POST request to create a plant with name {string} price {double} and quantity {int}")
     public void sendPostToCreatePlant(String name, double price, int quantity) {
@@ -124,7 +124,7 @@ public class ApiPlantsSteps {
                 .contains(createdId.intValue());
     }
 
-    // ─── T-API-22 & T-API-23: Validation errors ──────────────────────────────
+    // T-API-22 & T-API-23: Validation errors
 
     @Then("the plants response body should contain validation message {string}")
     public void verifyPlantsValidationMessage(String expectedMessage) {
@@ -146,7 +146,7 @@ public class ApiPlantsSteps {
                 .isTrue();
     }
 
-    // ─── T-API-24: PUT update plant ────────────────────────────────────────────
+    // T-API-24: PUT update plant 
 
     @When("I send a PUT request to update the plant with name {string} price {double} and quantity {int}")
     public void sendPutToUpdatePlant(String name, double price, int quantity) {
@@ -154,7 +154,7 @@ public class ApiPlantsSteps {
         lastPlantsResponse = plantsApiActions.updatePlant(token, plantId, categoryId, name, price, quantity);
     }
 
-    // ─── T-API-25: DELETE plant ────────────────────────────────────────────────
+    // T-API-25: DELETE plant
 
     @When("I send a DELETE request to remove the plant by ID")
     public void sendDeleteToRemovePlant() {
@@ -162,7 +162,7 @@ public class ApiPlantsSteps {
         lastPlantsResponse = plantsApiActions.deletePlant(token, plantId);
     }
 
-    // ─── T-API-26: GET all plants as User ─────────────────────────────────────
+    // T-API-26: GET all plants as User
 
     @When("I send a GET request to retrieve all plants via API")
     public void sendGetAllPlants() {
@@ -184,7 +184,7 @@ public class ApiPlantsSteps {
         }
     }
 
-    // ─── T-API-27: GET single plant as User ────────────────────────────────────
+    // T-API-27: GET single plant as User 
 
     @When("I send a GET request to retrieve a single plant by its ID")
     public void sendGetSinglePlant() {
@@ -200,7 +200,7 @@ public class ApiPlantsSteps {
                 .isEqualTo(plantId);
     }
 
-    // ─── T-API-28: GET paged plants as User ────────────────────────────────────
+    // T-API-28: GET paged plants as User
 
     @When("I send a GET request to the plants paged endpoint with page {int} size {int}")
     public void sendGetPlantsPaged(int page, int size) {

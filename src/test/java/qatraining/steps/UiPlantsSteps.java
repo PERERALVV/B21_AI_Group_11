@@ -25,7 +25,7 @@ public class UiPlantsSteps {
     private String selectedCategoryText;
     private String searchKeyword = "Aloe";
 
-    // ─── Navigation ──────────────────────────────────────────────────────────
+    // Navigation
 
     @When("I navigate to the plants list page")
     public void navigateToPlantsListPage() {
@@ -37,7 +37,7 @@ public class UiPlantsSteps {
         addEditPlantPage.open();
     }
 
-    // ─── Preconditions ───────────────────────────────────────────────────────
+    // Preconditions
 
     @Given("the plant {string} has been removed from the system if it exists")
     public void removePlantIfExists(String plantName) {
@@ -112,7 +112,7 @@ public class UiPlantsSteps {
         assertThat(plantsListPage.getPlantRowCount()).isGreaterThanOrEqualTo(3);
     }
 
-    // ─── T-UI-21: Admin controls visible ─────────────────────────────────────
+    // T-UI-21: Admin controls visible
 
     @Then("the {string} button should be visible on the plants page")
     public void verifyAddPlantButtonVisible(String buttonName) {
@@ -143,7 +143,7 @@ public class UiPlantsSteps {
                 .as("Plants navigation link should be active (highlighted)").isTrue();
     }
 
-    // ─── T-UI-22: Admin adds a plant ─────────────────────────────────────────
+    // T-UI-22: Admin adds a plant
 
     @When("I click the {string} button on the plants page")
     public void clickButtonOnPlantsPage(String buttonName) {
@@ -203,7 +203,7 @@ public class UiPlantsSteps {
                 .isTrue();
     }
 
-    // ─── T-UI-23: Validation messages ────────────────────────────────────────
+    // T-UI-23: Validation messages
 
     @When("I clear the plant name field")
     public void clearPlantNameField() {
@@ -243,7 +243,7 @@ public class UiPlantsSteps {
                 .containsIgnoringCase("negative");
     }
 
-    // ─── T-UI-24: Edit plant – Low badge ─────────────────────────────────────
+    // T-UI-24: Edit plant – Low badge
 
     @When("I click the Edit icon on the first plant in the list")
     public void clickEditOnFirstPlant() {
@@ -262,7 +262,7 @@ public class UiPlantsSteps {
                 .isTrue();
     }
 
-    // ─── T-UI-25: Delete plant with confirmation ──────────────────────────────
+    // T-UI-25: Delete plant with confirmation
 
     @When("I note the current plant count")
     public void noteCurrentPlantCount() {
@@ -313,7 +313,7 @@ public class UiPlantsSteps {
                 .isEqualTo(plantCountBeforeDelete - 1);
     }
 
-    // ─── T-UI-26: User – no management controls ───────────────────────────────
+    // T-UI-26: User – no management controls
 
     @Then("the {string} button should not be visible on the plants page")
     public void verifyButtonNotVisibleOnPlantsPage(String buttonName) {
@@ -337,7 +337,7 @@ public class UiPlantsSteps {
                 .isFalse();
     }
 
-    // ─── T-UI-30: Access denied for unauthorized plant operations ─────────────
+    // T-UI-30: Access denied for unauthorized plant operations
 
     @Then("the user should not be able to access the plant add page")
     public void verifyPlantAddPageInaccessible() {
@@ -347,7 +347,7 @@ public class UiPlantsSteps {
                 .doesNotContain("/ui/plants/add");
     }
 
-    // ─── T-UI-27: Search by name ──────────────────────────────────────────────
+    // T-UI-27: Search by name
 
     @When("I type {string} in the search plant field")
     public void typeInSearchField(String keyword) {
@@ -372,7 +372,7 @@ public class UiPlantsSteps {
                 .isTrue();
     }
 
-    // ─── T-UI-28: Filter by category ─────────────────────────────────────────
+    // T-UI-28: Filter by category
 
     @When("I select the first non-default option from the plant category filter")
     public void selectFirstNonDefaultCategory() {
@@ -390,7 +390,7 @@ public class UiPlantsSteps {
         }
     }
 
-    // ─── T-UI-29: Sort by Name, Price, Stock ─────────────────────────────────
+    // T-UI-29: Sort by Name, Price, Stock
 
     @When("I click on the plants table {string} column header")
     public void clickPlantColumnHeader(String columnName) {

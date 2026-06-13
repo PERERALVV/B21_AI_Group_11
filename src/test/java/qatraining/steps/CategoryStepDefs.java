@@ -88,6 +88,7 @@ public class CategoryStepDefs {
         apiSteps.adminDeleteCategory(storedCategoryId);
     }
 
+    @Then("validate GET for deleted category returns 404")
     @Then("GET for deleted category returns 404")
     public void verifyDeletedCategoryReturns404() {
         apiSteps.verifyDeletedCategoryReturns404(storedCategoryId);
@@ -129,36 +130,43 @@ public class CategoryStepDefs {
     //      403 scenarios. The {int} definition now covers 200, 400 and 403.
     // ═══════════════════════════════════════════════════════════════════════
 
+    @Then("validate the response status is {int}")
     @Then("the response status is {int}")
     public void verifyStatusCode(int code) {
         apiSteps.verifyStatusCode(code);
     }
 
+    @Then("validate the response status is 200 or 201")
     @Then("the response status is 200 or 201")
     public void verifyStatusIs200Or201() {
         apiSteps.verifyStatusIsSuccessCreate();
     }
 
+    @Then("validate the response status is 200 or 204")
     @Then("the response status is 200 or 204")
     public void verifyStatusIs200Or204() {
         apiSteps.verifyStatusIsSuccessDelete();
     }
 
+    @Then("validate the response body is a list of categories")
     @Then("the response body is a list of categories")
     public void verifyResponseIsList() {
         apiSteps.verifyResponseIsList();
     }
 
+    @Then("validate the response contains the name {string}")
     @Then("the response contains the name {string}")
     public void verifyResponseContainsName(String name) {
         apiSteps.verifyResponseContainsName(name);
     }
 
+    @Then("validate the response contains an id")
     @Then("the response contains an id")
     public void verifyResponseHasId() {
         apiSteps.verifyResponseHasId();
     }
 
+    @Then("validate the response contains a name length validation error")
     @Then("the response contains a name length validation error")
     public void verifyNameLengthError() {
         apiSteps.verifyNameLengthError();
@@ -278,61 +286,73 @@ public class CategoryStepDefs {
     // UI – Assertions
     // ═══════════════════════════════════════════════════════════════════════
 
+    @Then("validate the category list is displayed with at least one record")
     @Then("the category list is displayed with at least one record")
     public void categoryListDisplayed() {
         uiSteps.verifyCategoryListIsDisplayed();
     }
 
+    @Then("validate the success message is displayed")
     @Then("the success message is displayed")
     public void successMessageDisplayed() {
         uiSteps.verifySuccessMessage();
     }
 
+    @Then("validate the category {string} appears in the list")
     @Then("the category {string} appears in the list")
     public void categoryAppearsInList(String name) {
         uiSteps.verifyCategoryInList(name);
     }
 
+    @Then("validate the required name validation error is shown")
     @Then("the required name validation error is shown")
     public void requiredNameError() {
         uiSteps.verifyRequiredNameError();
     }
 
+    @Then("validate the name length validation error is shown")
     @Then("the name length validation error is shown")
     public void nameLengthError() {
         uiSteps.verifyNameLengthError();
     }
 
+    @Then("validate the Add Category button is NOT visible")
     @Then("the Add Category button is NOT visible")
     public void addButtonNotVisible() {
         uiSteps.verifyAddButtonNotVisible();
     }
 
+    @Then("validate Edit and Delete buttons are hidden")
     @Then("Edit and Delete buttons are hidden")
     public void editDeleteHidden() {
         uiSteps.verifyEditDeleteHidden();
     }
 
+    @Then("validate only categories matching {string} are shown")
     @Then("only categories matching {string} are shown")
     public void onlyMatchingCategoriesShown(String name) {
         uiSteps.verifyOnlyMatchingCategories(name);
     }
 
+    @Then("validate the user is on the Category List page")
     @Then("the user is on the Category List page")
     public void userIsOnCategoryListPage() {
         uiSteps.verifyCategoryListPageIsOpen();
     }
 
+    @Then("validate no confirmation dialog should appear")
     @Then("no confirmation dialog should appear")
     public void noConfirmationDialogShouldAppear() {
         uiSteps.verifyNoConfirmationDialog();
     }
 
+    @Then("validate an error message about sub-categories is shown")
     @Then("an error message about sub-categories is shown")
     public void subCategoryDeletionErrorShown() {
         uiSteps.verifyCannotDeleteParentError();
     }
 
+    @Then("validate the user sees a 403 Access Denied page")
     @Then("the user sees a 403 Access Denied page")
     public void userSees403Page() {
         uiSteps.verify403Page();

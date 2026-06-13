@@ -62,23 +62,27 @@ public class ApiAuthSteps {
         response = authApi.logout(token);
     }
 
+    @Then("validate the auth response status should be {int}")
     @Then("the auth response status should be {int}")
     public void statusShouldBe(int expected) {
         assertThat(response.getStatusCode()).isEqualTo(expected);
     }
 
+    @Then("validate the auth response should contain a token")
     @Then("the auth response should contain a token")
     public void shouldContainToken() {
         String t = response.jsonPath().getString("token");
         assertThat(t).isNotNull().isNotEmpty();
     }
 
+    @Then("validate the auth response should not contain a token")
     @Then("the auth response should not contain a token")
     public void shouldNotContainToken() {
         String t = response.jsonPath().getString("token");
         assertThat(t).isNull();
     }
 
+    @Then("validate the token in the response should have role {string}")
     @Then("the token in the response should have role {string}")
     public void tokenShouldHaveRole(String expectedRole) {
         String jwt = response.jsonPath().getString("token");
@@ -86,6 +90,7 @@ public class ApiAuthSteps {
         assertThat(decodeRoles(jwt)).contains(expectedRole);
     }
 
+    @Then("validate the token should be rejected for {string}")
     @Then("the token should be rejected for {string}")
     public void tokenRejectedAfterLogout(String path) {
         Response check = authApi.getWithToken(path, token);
@@ -95,6 +100,7 @@ public class ApiAuthSteps {
     }
 
     // ── Swagger contract: response-schema assertions ────────────────────────
+    @Then("validate the success response should match the JwtLoginResponse schema")
     @Then("the success response should match the JwtLoginResponse schema")
     public void successMatchesSchema() {
         assertThat(response.getStatusCode()).isEqualTo(200);
@@ -102,6 +108,7 @@ public class ApiAuthSteps {
         assertThat(response.jsonPath().getString("tokenType")).isEqualTo("Bearer");
     }
 
+    @Then("validate the error response should match the Swagger ErrorResponse schema")
     @Then("the error response should match the Swagger ErrorResponse schema")
     public void errorMatchesSchema() {
         JsonPath jp = response.jsonPath();

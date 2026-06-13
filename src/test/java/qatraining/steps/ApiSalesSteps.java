@@ -45,11 +45,13 @@ public class ApiSalesSteps {
         }
     }
 
+    @Then("validate the API response status code should be {int}")
     @Then("the API response status code should be {int}")
     public void verifyStatusCode(int expectedStatus) {
         assertThat(lastResponse.getStatusCode()).isEqualTo(expectedStatus);
     }
 
+    @Then("validate the response body should contain a list of sales records")
     @Then("the response body should contain a list of sales records")
     public void verifySalesList() {
         List<?> salesList = lastResponse.getBody().as(List.class);
@@ -82,18 +84,21 @@ public class ApiSalesSteps {
         lastResponse = salesApiActions.sellPlant(token, plantId, quantity);
     }
 
+    @Then("validate the response body should contain the created sale details")
     @Then("the response body should contain the created sale details")
     public void verifyCreatedSaleDetails() {
         Long id = lastResponse.jsonPath().getLong("id");
         assertThat(id).isNotNull().isGreaterThan(0L);
     }
 
+    @Then("validate the sale record should have quantity {int}")
     @Then("the sale record should have quantity {int}")
     public void verifySaleQuantity(int expectedQty) {
         int qty = lastResponse.jsonPath().getInt("quantity");
         assertThat(qty).isEqualTo(expectedQty);
     }
 
+    @Then("validate the response body should contain the validation error")
     @Then("the response body should contain the validation error")
     public void verifyValidationError() {
         String errorMsg = lastResponse.jsonPath().getString("message");
@@ -170,6 +175,7 @@ public class ApiSalesSteps {
         lastResponse = salesApiActions.getSaleById(token, saleId);
     }
 
+    @Then("validate the response body should contain the sale details matching the requested sale ID")
     @Then("the response body should contain the sale details matching the requested sale ID")
     public void verifySaleDetailsMatch() {
         Long id = lastResponse.jsonPath().getLong("id");
@@ -199,11 +205,13 @@ public class ApiSalesSteps {
         lastResponse = salesApiActions.getSalesPaged(token, page, size, sortField, sortDir);
     }
 
+    @Then("validate the response body should contain a paginated Page JSON object")
     @Then("the response body should contain a paginated Page JSON object")
     public void verifyPageObject() {
         assertThat(lastResponse.jsonPath().getMap("")).containsKeys("totalPages", "totalElements", "content");
     }
 
+    @Then("validate the page object should show size {int} and sorted details")
     @Then("the page object should show size {int} and sorted details")
     public void verifyPageSizeAndSorted(int expectedSize) {
         int size = lastResponse.jsonPath().getInt("size");

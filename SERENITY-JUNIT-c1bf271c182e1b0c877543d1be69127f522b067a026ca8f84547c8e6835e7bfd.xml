@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><testsuite errors="0" failures="1" name="Sales Module UI Testing" skipped="0" tests="10" time="3.67" timestamp="2026-06-13 05:03:45"><testcase name="T-UI-1 - Verify that Check sales list pagination and default sorting"><failure message="&#10;Expecting actual:&#10;  [&quot;Plant&quot;, &quot;Quantity&quot;, &quot;Total Price&quot;, &quot;Sold At&quot;]&#10;to contain exactly (and in same order):&#10;  [&quot;Plant name&quot;, &quot;Quantity&quot;, &quot;Total price&quot;, &quot;Sold date&quot;]&#10;but some elements were not found:&#10;  [&quot;Plant name&quot;, &quot;Total price&quot;, &quot;Sold date&quot;]&#10;and others were not expected:&#10;  [&quot;Plant&quot;, &quot;Total Price&quot;, &quot;Sold At&quot;]&#10;" type="org.opentest4j.AssertionFailedError">
+Expecting actual:
+  ["Plant", "Quantity", "Total Price", "Sold At"]
+to contain exactly (and in same order):
+  ["Plant name", "Quantity", "Total price", "Sold date"]
+but some elements were not found:
+  ["Plant name", "Total price", "Sold date"]
+and others were not expected:
+  ["Plant", "Total Price", "Sold At"]
+</failure><system-err>
+Expecting actual:
+  ["Plant", "Quantity", "Total Price", "Sold At"]
+to contain exactly (and in same order):
+  ["Plant name", "Quantity", "Total price", "Sold date"]
+but some elements were not found:
+  ["Plant name", "Total price", "Sold date"]
+and others were not expected:
+  ["Plant", "Total Price", "Sold At"]
+
+qatraining.steps.UiSalesSteps.verifyTableHeaders(UiSalesSteps.java:367)
+✽.the table headers should be "Plant name", "Quantity", "Total price", and "Sold date"(file:///home/runner/work/B21_AI_Group_11/B21_AI_Group_11/src/test/resources/features/sales/ui_sales.feature:12)
+</system-err></testcase><testcase name="T-UI-2 - Verify that Test column sorting functionality"/><testcase name="T-UI-3 - Verify that Test selling a plant (Happy path)"/><testcase name="T-UI-4 - Verify that Test validation messages for selling a plant"/><testcase name="T-UI-5 - Verify that Test Delete Sale confirmation"/><testcase name="T-UI-6 - Verify that Check read-only access to sales list"/><testcase name="T-UI-7 - Verify that Check 'No sales found' empty state"/><testcase name="T-UI-8 - Verify that Check if Admin buttons are hidden"/><testcase name="T-UI-9 - Verify that Test 403 redirect by forcing URL"/><testcase name="T-UI-10 - Verify that Test if grid sorting works for normal users"/></testsuite>

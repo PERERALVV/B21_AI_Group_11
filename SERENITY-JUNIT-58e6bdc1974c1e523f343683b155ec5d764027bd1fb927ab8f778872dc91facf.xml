@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><testsuite errors="0" failures="2" name="Sales Module API Testing" skipped="0" tests="10" time="1.02" timestamp="2026-06-13 05:03:42"><testcase name="T-API-1 - Verify that Check GET /api/sales endpoint with Admin token"/><testcase name="T-API-2 - Verify that Test POST /api/sales/plant/{plantId} (Happy path)"/><testcase name="T-API-3 - Verify that Test POST /api/sales/plant/{plantId} with quantity 0"/><testcase name="T-API-4 - Verify that Check GET /api/sales/{id} endpoint"/><testcase name="T-API-5 - Verify that Check DELETE /api/sales/{id} endpoint"/><testcase name="T-API-6 - Verify that Check GET /api/sales with normal user token"/><testcase name="T-API-7 - Verify that Check GET /api/sales/page with pagination"/><testcase name="T-API-8 - Verify that Check GET /api/sales/{id} with normal user token"/><testcase name="T-API-9 - Verify that Test 403 Forbidden on POST "><failure message="&#10;expected: 403&#10; but was: 201" type="org.opentest4j.AssertionFailedError">
+expected: 403
+ but was: 201</failure><system-err>
+expected: 403
+ but was: 201
+qatraining.steps.ApiSalesSteps.verifyStatusCode(ApiSalesSteps.java:51)
+✽.validate the API response status code should be 403(file:///home/runner/work/B21_AI_Group_11/B21_AI_Group_11/src/test/resources/features/sales/api_sales.feature:76)
+</system-err></testcase><testcase name="T-API-10 - Verify that Test 403 Forbidden on DELETE "><failure message="&#10;expected: 403&#10; but was: 204" type="org.opentest4j.AssertionFailedError">
+expected: 403
+ but was: 204</failure><system-err>
+expected: 403
+ but was: 204
+qatraining.steps.ApiSalesSteps.verifyStatusCode(ApiSalesSteps.java:51)
+✽.validate the API response status code should be 403(file:///home/runner/work/B21_AI_Group_11/B21_AI_Group_11/src/test/resources/features/sales/api_sales.feature:84)
+</system-err></testcase></testsuite>

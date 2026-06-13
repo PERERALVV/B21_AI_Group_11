@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><testsuite errors="0" failures="5" name="Authentication Module - API" skipped="0" tests="10" time="3.8" timestamp="2026-06-13 05:01:48"><testcase name="T-API-11 - Verify that Login with valid admin credentials returns a token"/><testcase name="T-API-12 - Verify that Login with a wrong password must return a 400 ErrorResponse"><failure message="&#10;expected: 400&#10; but was: 401" type="org.opentest4j.AssertionFailedError">
+expected: 400
+ but was: 401</failure><system-err>
+expected: 400
+ but was: 401
+qatraining.steps.ApiAuthSteps.statusShouldBe(ApiAuthSteps.java:68)
+✽.validate the auth response status should be 400(file:///home/runner/work/B21_AI_Group_11/B21_AI_Group_11/src/test/resources/features/auth/api_auth.feature:20)
+</system-err></testcase><testcase name="T-API-13 - Verify that Login with a blank username must return a 400 ErrorResponse"><failure message="&#10;expected: 400&#10; but was: 401" type="org.opentest4j.AssertionFailedError">
+expected: 400
+ but was: 401</failure><system-err>
+expected: 400
+ but was: 401
+qatraining.steps.ApiAuthSteps.statusShouldBe(ApiAuthSteps.java:68)
+✽.validate the auth response status should be 400(file:///home/runner/work/B21_AI_Group_11/B21_AI_Group_11/src/test/resources/features/auth/api_auth.feature:27)
+</system-err></testcase><testcase name="T-API-14 - Verify that Login with a blank password must return a 400 ErrorResponse"><failure message="&#10;expected: 400&#10; but was: 401" type="org.opentest4j.AssertionFailedError">
+expected: 400
+ but was: 401</failure><system-err>
+expected: 400
+ but was: 401
+qatraining.steps.ApiAuthSteps.statusShouldBe(ApiAuthSteps.java:68)
+✽.validate the auth response status should be 400(file:///home/runner/work/B21_AI_Group_11/B21_AI_Group_11/src/test/resources/features/auth/api_auth.feature:34)
+</system-err></testcase><testcase name="T-API-15 - Verify that Logout must invalidate the admin session token"><failure message="[after logout the session token must be rejected (401)] &#10;expected: 401&#10; but was: 200" type="org.opentest4j.AssertionFailedError">[after logout the session token must be rejected (401)] 
+expected: 401
+ but was: 200</failure><system-err>[after logout the session token must be rejected (401)] 
+expected: 401
+ but was: 200
+qatraining.steps.ApiAuthSteps.tokenRejectedAfterLogout(ApiAuthSteps.java:99)
+✽.validate the token should be rejected for "/api/categories"(file:///home/runner/work/B21_AI_Group_11/B21_AI_Group_11/src/test/resources/features/auth/api_auth.feature:45)
+</system-err></testcase><testcase name="T-API-16 - Verify that Login token carries the correct role per user"/><testcase name="T-API-17 - Verify that A user token works across protected GET endpoints"/><testcase name="T-API-18 - Verify that A user token is forbidden on an admin-only endpoint"/><testcase name="T-API-19 - Verify that A protected endpoint without a token is unauthorized"/><testcase name="T-API-20 - Verify that Login with a non-existent user must return a 400 ErrorResponse"><failure message="&#10;expected: 400&#10; but was: 401" type="org.opentest4j.AssertionFailedError">
+expected: 400
+ but was: 401</failure><system-err>
+expected: 400
+ but was: 401
+qatraining.steps.ApiAuthSteps.statusShouldBe(ApiAuthSteps.java:68)
+✽.validate the auth response status should be 400(file:///home/runner/work/B21_AI_Group_11/B21_AI_Group_11/src/test/resources/features/auth/api_auth.feature:78)
+</system-err></testcase></testsuite>

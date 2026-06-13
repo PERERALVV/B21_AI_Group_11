@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><testsuite errors="0" failures="2" name="Plants Module API Testing" skipped="0" tests="12" time="1.22" timestamp="2026-06-13 05:02:38"><testcase name="T-API-21 - Verify that Test POST /api/plants/category/{categoryId} endpoint as Admin"/><testcase name="T-API-22 - Verify that Test POST /api/plants with plant name shorter than 3 characters"/><testcase name="T-API-23 - Verify that Test POST /api/plants with price equal to zero"/><testcase name="T-API-24 - Verify that Test PUT /api/plants/{id} updates an existing plant successfully"/><testcase name="T-API-25 - Verify that Test DELETE /api/plants/{id} removes the plant"/><testcase name="T-API-26 - Verify that Test GET /api/plants as User"/><testcase name="T-API-27 - Verify that Test GET /api/plants/{id} as User"/><testcase name="T-API-28 - Verify that Test GET /api/plants/paged as User"/><testcase name="T-API-29 - Verify that Test POST /api/plants/category/{categoryId} as User returns 403 Forbidden"/><testcase name="T-API-30 - Verify that Test DELETE /api/plants/{id} as User returns 403 Forbidden"/><testcase name="T-API-32 - Verify that Test PUT /api/plants/{id} with full swagger request body including id and category object"><failure message="[Plants API response status code] &#10;expected: 200&#10; but was: 500" type="org.opentest4j.AssertionFailedError">[Plants API response status code] 
+expected: 200
+ but was: 500</failure><system-err>[Plants API response status code] 
+expected: 200
+ but was: 500
+qatraining.steps.ApiPlantsSteps.verifyPlantsApiStatusCode(ApiPlantsSteps.java:107)
+✽.validate the plants API response status code should be 200(file:///home/runner/work/B21_AI_Group_11/B21_AI_Group_11/src/test/resources/features/plants/api_plants.feature:85)
+</system-err></testcase><testcase name="T-API-31 - Verify that Test DELETE /api/plants/{id} on already-deleted plant returns 404 not 204"><failure message="[Plants API response status code] &#10;expected: 404&#10; but was: 204" type="org.opentest4j.AssertionFailedError">[Plants API response status code] 
+expected: 404
+ but was: 204</failure><system-err>[Plants API response status code] 
+expected: 404
+ but was: 204
+qatraining.steps.ApiPlantsSteps.verifyPlantsApiStatusCode(ApiPlantsSteps.java:107)
+✽.validate the plants API response status code should be 404(file:///home/runner/work/B21_AI_Group_11/B21_AI_Group_11/src/test/resources/features/plants/api_plants.feature:95)
+</system-err></testcase></testsuite>

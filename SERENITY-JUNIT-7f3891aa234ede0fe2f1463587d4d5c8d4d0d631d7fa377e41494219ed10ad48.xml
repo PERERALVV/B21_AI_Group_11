@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><testsuite errors="0" failures="4" name="Plants Module UI Testing" skipped="0" tests="11" time="4.14" timestamp="2026-06-13 05:02:40"><testcase name="T-UI-21 - Verify that Admin views Plants page with all management controls visible"><failure message="[Plants navigation link should be active (highlighted)] &#10;Expecting value to be true but was false" type="org.opentest4j.AssertionFailedError">[Plants navigation link should be active (highlighted)] 
+Expecting value to be true but was false</failure><system-err>[Plants navigation link should be active (highlighted)] 
+Expecting value to be true but was false
+qatraining.steps.UiPlantsSteps.verifyPlantsNavLinkActive(UiPlantsSteps.java:158)
+✽.the Plants navigation link should be active(file:///home/runner/work/B21_AI_Group_11/B21_AI_Group_11/src/test/resources/features/plants/ui_plants.feature:13)
+</system-err></testcase><testcase name="T-UI-22 - Verify that Admin successfully adds a new plant with valid data"/><testcase name="T-UI-23 - Verify that Add Plant form shows field-level validation errors for invalid inputs"/><testcase name="T-UI-24 - Verify that Admin edits a plant and the Low badge appears when quantity drops below 5"/><testcase name="T-UI-25 - Verify that Admin deletes a plant via confirmation prompt"/><testcase name="T-UI-26 - Verify that User views Plants page and all management controls are hidden"><failure message="[Actions column header should NOT be visible for a normal User (BUG-004)] &#10;Expecting value to be false but was true" type="org.opentest4j.AssertionFailedError">[Actions column header should NOT be visible for a normal User (BUG-004)] 
+Expecting value to be false but was true</failure><system-err>[Actions column header should NOT be visible for a normal User (BUG-004)] 
+Expecting value to be false but was true
+qatraining.steps.UiPlantsSteps.verifyActionsColumnNotVisible(UiPlantsSteps.java:365)
+✽.the Actions column should not be visible in the plants table(file:///home/runner/work/B21_AI_Group_11/B21_AI_Group_11/src/test/resources/features/plants/ui_plants.feature:70)
+</system-err></testcase><testcase name="T-UI-27 - Verify that User searches for a plant by name"><failure message="[Search for 'Rose Mary' should return at least one result (BUG-005: multi-word search returns no results)] &#10;Expecting actual:&#10;  0&#10;to be greater than:&#10;  0&#10;" type="java.lang.AssertionError">[Search for 'Rose Mary' should return at least one result (BUG-005: multi-word search returns no results)] 
+Expecting actual:
+  0
+to be greater than:
+  0
+</failure><system-err>[Search for 'Rose Mary' should return at least one result (BUG-005: multi-word search returns no results)] 
+Expecting actual:
+  0
+to be greater than:
+  0
+
+qatraining.steps.UiPlantsSteps.verifyPlantSearchResults(UiPlantsSteps.java:399)
+✽.validate the plant table should show only plants matching the search term(file:///home/runner/work/B21_AI_Group_11/B21_AI_Group_11/src/test/resources/features/plants/ui_plants.feature:79)
+</system-err></testcase><testcase name="T-UI-28 - Verify that User filters plants by category"/><testcase name="T-UI-29 - Verify that User sorts plant list by Name, Price, and Stock ascending then descending"/><testcase name="T-UI-30 - Verify that User directly navigates to /ui/plants/add and is denied access"/><testcase name="T-UI-31 - Verify that Plants table fourth column header should be named Quantity not Stock"><failure message="[Fourth column header should be 'Quantity' (BUG-007: actual header is 'Stock')] &#10;expected: &quot;Quantity&quot;&#10; but was: &quot;Stock&quot;" type="org.opentest4j.AssertionFailedError">[Fourth column header should be 'Quantity' (BUG-007: actual header is 'Stock')] 
+expected: "Quantity"
+ but was: "Stock"</failure><system-err>[Fourth column header should be 'Quantity' (BUG-007: actual header is 'Stock')] 
+expected: "Quantity"
+ but was: "Stock"
+qatraining.steps.UiPlantsSteps.verifyFourthColumnHeader(UiPlantsSteps.java:140)
+✽.validate the fourth column header in the plants table should be "Quantity"(file:///home/runner/work/B21_AI_Group_11/B21_AI_Group_11/src/test/resources/features/plants/ui_plants.feature:114)
+</system-err></testcase></testsuite>

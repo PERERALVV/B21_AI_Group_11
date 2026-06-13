@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Serenity Reports</title>
+
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+<link rel="apple-touch-icon" sizes="57x57" href="apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+<link rel="stylesheet" href="bootstrap-icons/bootstrap-icons.css">
+<!-- JQuery -->
+<script type="text/javascript" src="scripts/jquery-1.11.1.min.js"></script><!-- Required Stylesheets -->
+<link href="bootstrap-treeview/dist/bootstrap-treeview.min.css" rel="stylesheet">
+
+<!-- Required Javascript -->
+<script src="bootstrap-treeview/dist/bootstrap-treeview.min.js"></script><!-- DataTables -->
+<link type="text/css" href="datatables/1.13.1/datatables.min.css" rel="stylesheet" />
+<script type="text/javascript" src="datatables/1.13.1/datatables.min.js"></script>
+<script type="text/javascript" src="datatables/1.13.1/time-elapsed-dhms.js"></script>
+
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+
+<script>
+    jQuery.fn.dataTable.ext.type.order['time-elapsed-dhms-pre'] = function(data) {
+
+        var matches = data.match(/^(\d+(?:\.\d+)?)\s*([a-z]+)/i);
+        var multipliers = {
+            ms: 1,
+            s: 1000,
+            m: 60000,
+            h: 3600000,
+            d: 86400000
+        };
+
+        if (matches) {
+            var multiplier = multipliers[matches[2].toLowerCase()];
+            return parseFloat(matches[1]) * multiplier;
+        } else {
+            return -1;
+        };
+    };
+</script>
+<link rel="stylesheet" href="css/core.css"/>
+<link rel="stylesheet" href="css/link.css"/>
+<link type="text/css" media="screen" href="css/screen.css" rel="Stylesheet"/>
+<!--CHART.JS-->
+<script src="chartjs/chart.js"></script>
+<script src="chartjs/chartjs-plugin-datalabels@2.0.0.min.js"></script>
+<script src="chartjs/patternomaly.min.js"></script>
+<script>
+    // Register the plugin to all charts:
+    Chart.register(ChartDataLabels);
+</script>
+<!-- JQuery-UI -->
+<link type="text/css" href="jqueryui/1.11.2-start/jquery-ui.min.css" rel="Stylesheet" />
+<script type="text/javascript" src="jqueryui/1.11.2-start/jquery-ui.min.js"></script><!-- DataTables -->
+<link type="text/css" href="datatables/1.13.1/datatables.min.css" rel="stylesheet" />
+<script type="text/javascript" src="datatables/1.13.1/datatables.min.js"></script>
+<script type="text/javascript" src="datatables/1.13.1/time-elapsed-dhms.js"></script>
+
+<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<script src="bootstrap/js/bootstrap.min.js"></script>
+
+
+<script>
+    jQuery.fn.dataTable.ext.type.order['time-elapsed-dhms-pre'] = function(data) {
+
+        var matches = data.match(/^(\d+(?:\.\d+)?)\s*([a-z]+)/i);
+        var multipliers = {
+            ms: 1,
+            s: 1000,
+            m: 60000,
+            h: 3600000,
+            d: 86400000
+        };
+
+        if (matches) {
+            var multiplier = multipliers[matches[2].toLowerCase()];
+            return parseFloat(matches[1]) * multiplier;
+        } else {
+            return -1;
+        };
+    };
+</script>
+
+
+
+    <script class="code" type="text/javascript">$(document).ready(function () {
+
+
+            $("#scenario-results").DataTable({
+                "order": [[0, "asc",], [3, "asc",]],
+                "language": {
+                    searchPlaceholder: "Filter",
+                    search: ""
+                },
+                columnDefs: [
+                    {type: 'time-elapsed-dhms', targets: 4}
+                ]
+            })
+            $("#manual-scenario-results").DataTable({
+                "order": [[0, "asc",], [1, "asc",]],
+                "language": {
+                    searchPlaceholder: "Filter",
+                    search: ""
+                },
+            })
+
+        // Results table
+        $('#test-results-table').DataTable({
+            "order": [[0, "asc",], [3, "asc",]],
+            "pageLength": 100,
+            "lengthMenu": [[25, 50, 100, 200, -1], [25, 50, 100, 200, "All"]]
+        });
+
+    })
+    ;
+    </script>
+</head>
+
+<body class="results-page">
+<div id="topheader">
+    <div id="topbanner">
+        <div id="logo"><a href="index.html"><img src="images/serenity-logo.png" border="0"/></a></div>
+        <div id="projectname-banner" style="float:right">
+            <span class="projectname">
+                <span class="projecttitle">Serenity BDD Report</span>
+                <span class="projectsubtitle"></span>
+            </span>
+        </div>
+    </div>
+</div>
+
+<div class="middlecontent">
+
+
+    <div id="contenttop">
+        <div class="middlebg">
+        <span class="breadcrumbs"><a href="index.html">Home</a>
+                > Tag 
+                > <span
+                    class="truncate-60">UI > Duration Under 1 Second</span>
+        </span>
+        </div>
+        <div class="rightbg"></div>
+    </div>
+
+    <div class="clr"></div>
+    <!--/* starts second table*/-->
+<div>
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#"><i class="bi bi-journal-check"></i> Overall Test Results</a>
+        </li>
+        <li >
+            <a href="capabilities.html"><i class="bi bi-journal-text"></i> Requirements</a>
+        </li>
+        <li >
+            <a href="dafb266f68444cb7f2451c923d70c1428ac45470c361842b818e6daa9bcd4fa8.html"><i class="bi bi-chat-text"></i> Themes</a>
+        </li>
+        <li >
+            <a href="7ea0a5e2d679b9deeda9910ae4a9bcd3a281e0d908303a9e16e486103e98880c.html"><i class="bi bi-chat-text"></i> Capabilities</a>
+        </li>
+        <li >
+            <a href="576946480b52ad056d6f5bddf874399c83582ecf90963cc074a14c70580e7d9f.html"><i class="bi bi-chat-text"></i> Features</a>
+        </li>
+    </ul>
+    <span class="date-and-time"><a href="build-info.html"><i class="bi bi-info-circle"></i></a> Report generated 13-06-2026 05:05:09</span>
+    <br style="clear:left"/>
+</div>
+    <div class="clr"></div>
+    <div id="beforetable"></div>
+    <div id="results-dashboard">
+        <div class="middlb">
+            <div class="table">
+
+                <h2><i class='bi bi-tags'></i> Tag: UI > Duration Under 1 Second</h2>
+                <table class='overview'>
+                    <tr>
+                        <td width="375px" valign="top">
+                            <div class="test-count-summary">
+                                <div>
+
+                                    34 tests
+
+                                     |
+                                        <a href="7578d5b92cb2e0e533511f23c9a7bf5ef369303d3db97105002e667fc0bf5d62.csv" title="Download CSV"> <i class="bi bi-cloud-arrow-down" title="Download CSV"></i></a>
+
+                                    <p class="report-info"><i class="bi bi-info-circle"></i> Note that results include
+                                        data-driven scenarios containing tests ,
+                                        which may also contain results other than tests .</p>
+
+
+
+                                </div>
+                            </div>
+
+                            <div>
+                                <ul class="nav nav-tabs">
+                                    <li class="active">
+                                        <a data-toggle="tab" href="#summary"><i class="bi bi-house-door"></i> Summary</a>
+                                    </li>
+                                    <li>
+                                        <a data-toggle="tab" href="#tests"><i class="bi bi-speedometer"></i> Test
+                                            Results</a>
+                                    </li>
+                                </ul>
+
+                                <div class="card border">
+                                    <div class="tab-content" id="pills-tabContent">
+                                        <div id="summary" class="tab-pane fade in active">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col-sm-4">
+    <div>
+        <h3><i class="bi bi-speedometer2"></i> Key Statistics</h3>
+        <div>
+            <table class="table table-striped table-hover">
+                <tbody>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-card-checklist"></i> Number of Scenarios
+                    </td>
+                    <td>34</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-caret-right"></i> Total Number of Test Cases
+                    </td>
+                    <td>34</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-flag-fill"></i> Tests Started
+                    </td>
+                    <td>Jun 13, 2026 05:02:06</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stop-circle"></i> Tests
+                        Finished
+                    </td>
+                    <td>Jun 13, 2026 05:04:56</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stopwatch"></i> Total
+                        Duration
+                    </td>
+                    <td> 2m 49s</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-trophy"></i> Fastest Test
+                    </td>
+                    <td>351ms</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-skip-start"></i> Slowest
+                        Test
+                    </td>
+                    <td>945ms</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stopwatch"></i> Average
+                        Execution Time
+                    </td>
+                    <td>542ms</td>
+                </tr>
+                <tr scope="row">
+                    <td>
+                        <i class="bi bi-stopwatch-fill"></i> Total
+                        Execution Time
+                    </td>
+                    <td>18s</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+                                                    </div>
+                                                    <div class="col-sm-4">
+                                                        <h4><i class="bi bi-check-square"></i> Test Outcomes</h4>
+                                                        <!-- Severity bar chart -->
+                                                        <div class="chart-container" style="position: relative; width:30vw">
+                                                            <canvas id="severityChart" width="300" height="300"></canvas>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-4">
+                                                        <h4><i class="bi bi-graph-up"></i> Test Performance</h4>
+
+                                                        <!-- Duration bar chart -->
+                                                        <div class="chart-container" style="position: relative; width:30vw">
+                                                            <canvas id="durationChart" width="300" height="300"></canvas>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <!-- High level coverage bar chart -->
+                                                            <div class="chart-container" style="position: relative; width:60vw">
+                                                                <h3><i class="bi bi-reception-3"></i> Functional Coverage Overview</h3>
+                                                                <h4>Features</h4>
+                                                                <canvas id="coverageChart"></canvas>
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                                    <div class="row">
+                                                        <div class="col-sm-12">
+                                                            <h3>Tags</h3>
+
+                                                                <div class="card">
+                                                                    <div class="card-body">
+                                                                        <div>
+                                                                                <a href="17577daaad2fd309e0837b76421d7c81a554f65af8961466d1a2c3c19c8c6e49.html">
+                                                                                    <span class="badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> Ui&nbsp;&nbsp;&nbsp;34
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="8fd5c39c0daf1cec665468ee7c6c188e13ba13ed9ef4369399c0fe556324f50f.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> 215543T&nbsp;&nbsp;&nbsp;6
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="2e8f1269fe45189870d5526ad4ad731be44b38828d72bce8e524d95df0079f07.html">
+                                                                                    <span class="badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> User&nbsp;&nbsp;&nbsp;15
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="d8723b84223143d478b2c9f36a410d52b17276955c37305b6baf0cc7f735b357.html">
+                                                                                    <span class="badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> 215542N&nbsp;&nbsp;&nbsp;10
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="eecbef3131c1db3e154b900feda22fded6fe7636d7525984498bd3cc9ca8e2b4.html">
+                                                                                    <span class="badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-21&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="8ce2828da246d4864d48192b3557b11d6bdbb75ee8493d4deabee54bbfa24d0c.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-6&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="226a899ff2c9c754ff4564ee458e094a107fecf227c4a157db00334a0805efed.html">
+                                                                                    <span class="badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> Bug&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="c7db5fe202721f2af9517722cad287db12ea1557ec5d442c6a88de2da6c5a0f3.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-13&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="3447f77379c16a5bb29fa6a6fe37b4b4d20fe344b053c4ae136be0a1e7290834.html">
+                                                                                    <span class="badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> Admin&nbsp;&nbsp;&nbsp;15
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="e0000a9d6087ecc218881f6b1d2906b88ee20fdd88956c91ccbda890e3910783.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> TC-UI-CAT-U03&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="71764366ea49a66fc560532584787a143e24de4e1eb282fc6ffbec2ac9d19457.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-25&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="954b4432b34beefa28b8de7e862f441d73a093b0ed2e2866c54cd6ecae2075f1.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-2&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="0c12f206d13f9801a844cf4baa1a45351033186bf5f5147b7e837a733624d12c.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-17&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="3fc676afbc99e948614d4f69b44b3247ff22fbb97774abfdc61417b7a681118a.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-29&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="9e3a821a37f339bd37c4420fe810939960850741eeeeb3bbd150e291a72a4505.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> TC-UI-CAT-A03&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="7e1f47907c4b682395b98a814fba88207e042a98b9b6ad349422f4e870772852.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-30&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="17d2a60d5f5ba941a6942256bcc92cc79470b7ea03051273ae0a181feb7e4419.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-7&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="11a74ab85f5c47864ed90aa02028f21608d51dd5495d69932ef9dae49aa06c86.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-10&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="2d0f97096782ee36b5df8dfa7b46d44bd8abe81b9d6209117c82f088795554e4.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-22&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="d28663bfb945d767e5dc1b8d2f9eaa667d01596f0c8a1a84dd3485d1ff1626a9.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> Anonymous&nbsp;&nbsp;&nbsp;4
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="7d3cd4bd95ded39f266abeeeb09d0f4d44359691e9452a70e6678df3c272ddc0.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> TC-UI-CAT-U04&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="771deb6c7467365eb991588888c9324c1b2fd5cec883d9f2c386472c386efe38.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-3&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="58fa32e42aeb5af394fe1eec50c59feeafed60cb1acdcaf72d5fa5d98769be01.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-14&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="81bf1e09cd98a4143f3102f1189e03c77cb47cafd22295f4c5ca587b7ce4e50f.html">
+                                                                                    <span class="badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-26&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="f76f0ce5a824445c962c2072966502a086e1c92bc3f73f44c7fbae9c5b6fd916.html">
+                                                                                    <span class="badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> 215533M&nbsp;&nbsp;&nbsp;11
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="4eb79cc0b3ec586fb3cf465a4f8c5388b2904e5a3b9986c9161ff07ab0235124.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-8&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="0f9ab48bd90aec59d32294dc043bda12b223fa34bf73140bbe83b255f903a280.html">
+                                                                                    <span class="badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-31&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="95e4cb38c161b683565108e9acc1ed33df1ad6a153e063ce612a5cb578134f80.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-23&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="c2d9d11d86ba5985d2813233edb68a738b0ae0257cedf1a11173d164da5a09a7.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-4&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="e41b142a9fc6c086464fb6558fadc92ec60e7d6d4c975bbb03faf3f0e4729c68.html">
+                                                                                    <span class="badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> TC-UI-CAT-U01&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="74ca92abd64b6dac3d67b0c6371a0ef08e1852c53ab8c39179598ab1b0ba9978.html">
+                                                                                    <span class="badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> Bug Detection&nbsp;&nbsp;&nbsp;4
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="7a85012ee73ff3a43bd10ae44ac410f4585913b27a0ae87756cfc3823abd4ffc.html">
+                                                                                    <span class="badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-27&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="9ce8ec37a0e3bdf3f83a3ba49d266ad8dc1004079b9815704c26f13fcfdfef82.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> TC-UI-CAT-A01&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="043919ec8d279884a1a78a1c472c20fe01b204339cf363e55b604c854dbc1d59.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-19&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="ca3edc8d0d40558b90ce590bf2749171f3a89322c3e2014952fe09bcddc12372.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-9&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="0729dfdb056d547681dc7d2d418e8c74b106ae6bb0d6ac9691aca406f3c86ac7.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-20&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="3f29f40213bfb1a9c2e9a13335efde9836e46180a4be56814117378ca607f789.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-5&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="a8f4275f2aeebbf674873d8e79f4433ead97ffc6612937f3fc67afb5098cf64e.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-12&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="8ba492c4b3b8a94da4a694bfdbe682aa24a6a74e31ea8c3e0fdbd49f51e0efba.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-24&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="9263d126f2e92fc41e6fa0542bf8a9184cbd4347d62a5a2288dd0926b6d5bf8b.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> TC-UI-CAT-U02&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="ec89b08282a1c1c13a8724c8cf433da85f8329e8f4fd53c480985713c59b8166.html">
+                                                                                    <span class="badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-1&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="d502dc603c10f814de1d12e09065afd5911163ee3e517107a294032dc06eee6d.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> TC-UI-CAT-A02&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                                <a href="578db9c66b4d1dbd466dbd1e4ecbc9c532bdb55b9c2d58c2a615f49bc275d3f0.html">
+                                                                                    <span class="badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                                                                        <i class="bi bi-tag"></i> T-UI-28&nbsp;&nbsp;&nbsp;1
+                                                                                    </span>
+                                                                                </a>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                        </div>
+                                                    </div>
+                                            </div>
+
+                                            <div class="container-fluid">
+                                                    <div class="row">
+                                                        <div class="col-sm-11">
+                                                            <h3>Functional Coverage Details</h3>
+
+
+                                                                    <h4>Features</h4>
+
+                                                                    <table class="table feature-coverage-table" id="Feature">
+                                                                        <thead>
+                                                                        <tr>
+                                                                            <th>Feature</th>
+                                                                            <th style="width:1em;">Test&nbsp;Cases</th>
+                                                                            <th style="width:1em;">Scenarios</th>
+                                                                            <th style="width:1em;">%&nbsp;Pass</th>
+                                                                            <th style="width:1em;">Result</th>
+                                                                            <th>Coverage</th>
+                                                                        </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                                <tr>
+                                                                                    <td>
+                                                                                            <a href="f3554d580ef10916c13a3594efd95c7f0c2273c3b0145ac2f3b4d3fe0785029a.html" > Authentication Module - UI</a>
+                                                                                    </td>
+                                                                                    <td>6</td>
+                                                                                    <td>6</td>
+                                                                                    <td>100%</td>
+                                                                                    <td>
+                                                                                            <a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="progress">
+                                                                                                <div class="progress-bar"
+                                                                                                     role="progressbar"
+                                                                                                     style="width: 100%; background-color: #b0cf73"
+                                                                                                     aria-valuenow="6"
+                                                                                                     title="100% success"
+                                                                                                     aria-valuemin="0"
+                                                                                                     aria-valuemax="100">
+                                                                                                </div>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>
+                                                                                            <a href="587e463e47bb922df3bcf5084a09f5eb7e50aa7758a6bc222e9e15aa71595ca9.html" > Admin & User UI – Category Management</a>
+                                                                                    </td>
+                                                                                    <td>7</td>
+                                                                                    <td>7</td>
+                                                                                    <td>86%</td>
+                                                                                    <td>
+                                                                                            <a href='##beforetable'><i class='bi bi-x-circle-fill failure-icon ' title='FAILURE'></i></a>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="progress">
+                                                                                                <div class="progress-bar"
+                                                                                                     role="progressbar"
+                                                                                                     style="width: 85.714286%; background-color: #b0cf73"
+                                                                                                     aria-valuenow="6"
+                                                                                                     title="86% success"
+                                                                                                     aria-valuemin="0"
+                                                                                                     aria-valuemax="100">
+                                                                                                </div>
+                                                                                                <div class="progress-bar"
+                                                                                                     role="progressbar"
+                                                                                                     style="width: 14.285714%; background-color: #fd938e"
+                                                                                                     aria-valuenow="1"
+                                                                                                     title="14% failure"
+                                                                                                     aria-valuemin="0"
+                                                                                                     aria-valuemax="100">
+                                                                                                </div>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>
+                                                                                            <a href="80e55b52dc2ff20657f51cbcfae0fa56bad7dc9fa6cd9229f94fe6cd6502c1a0.html" > Plants Module UI Testing</a>
+                                                                                    </td>
+                                                                                    <td>11</td>
+                                                                                    <td>11</td>
+                                                                                    <td>64%</td>
+                                                                                    <td>
+                                                                                            <a href='##beforetable'><i class='bi bi-x-circle-fill failure-icon ' title='FAILURE'></i></a>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="progress">
+                                                                                                <div class="progress-bar"
+                                                                                                     role="progressbar"
+                                                                                                     style="width: 63.636364%; background-color: #b0cf73"
+                                                                                                     aria-valuenow="7"
+                                                                                                     title="64% success"
+                                                                                                     aria-valuemin="0"
+                                                                                                     aria-valuemax="100">
+                                                                                                </div>
+                                                                                                <div class="progress-bar"
+                                                                                                     role="progressbar"
+                                                                                                     style="width: 36.363636%; background-color: #fd938e"
+                                                                                                     aria-valuenow="4"
+                                                                                                     title="36% failure"
+                                                                                                     aria-valuemin="0"
+                                                                                                     aria-valuemax="100">
+                                                                                                </div>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td>
+                                                                                            <a href="97a3b77526a84a36eb0cd0ecdca82597530d9c905606bfd8c2946f70c269dd13.html" > Sales Module UI Testing</a>
+                                                                                    </td>
+                                                                                    <td>10</td>
+                                                                                    <td>10</td>
+                                                                                    <td>90%</td>
+                                                                                    <td>
+                                                                                            <a href='##beforetable'><i class='bi bi-x-circle-fill failure-icon ' title='FAILURE'></i></a>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <div class="progress">
+                                                                                                <div class="progress-bar"
+                                                                                                     role="progressbar"
+                                                                                                     style="width: 90%; background-color: #b0cf73"
+                                                                                                     aria-valuenow="9"
+                                                                                                     title="90% success"
+                                                                                                     aria-valuemin="0"
+                                                                                                     aria-valuemax="100">
+                                                                                                </div>
+                                                                                                <div class="progress-bar"
+                                                                                                     role="progressbar"
+                                                                                                     style="width: 10%; background-color: #fd938e"
+                                                                                                     aria-valuenow="1"
+                                                                                                     title="10% failure"
+                                                                                                     aria-valuemin="0"
+                                                                                                     aria-valuemax="100">
+                                                                                                </div>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                                            <h3>Test Failure Overview</h3>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                                            <h4>Most Frequent Failures</h4>
+                                                            <table class="table" style="width:40vw;">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="failure-color top-list-title">
+                                                                            <a href="4700173f71ac97a0f1d5b751da298ef12393b99bf9643a6e6aad73d7997ea7bb.html"><a href='##beforetable'><i class='bi bi-x-circle-fill failure-icon ' title='FAILURE'></i></a> Assertion failed error</a>
+                                                                        </td>
+                                                                        <td><span
+                                                                                    class="badge failure-badge">5</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="failure-color top-list-title">
+                                                                            <a href="a0ace456df350117335ad374e8d62c0d8c978db868ea1469e0c5ba32aac965ea.html"><a href='##beforetable'><i class='bi bi-x-circle-fill failure-icon ' title='FAILURE'></i></a> Assertion error</a>
+                                                                        </td>
+                                                                        <td><span
+                                                                                    class="badge failure-badge">1</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                                            <h4>Most Unstable Features</h4>
+                                                            <table class="table" style="width:40vw;">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td class="failure-color top-list-title">
+                                                                            <a href="80e55b52dc2ff20657f51cbcfae0fa56bad7dc9fa6cd9229f94fe6cd6502c1a0.html">Plants Module UI Testing</a>
+                                                                        </td>
+                                                                        <td>
+                                                                            <span class="badge failure-badge">36%</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="failure-color top-list-title">
+                                                                            <a href="587e463e47bb922df3bcf5084a09f5eb7e50aa7758a6bc222e9e15aa71595ca9.html">Admin & User UI – Category Management</a>
+                                                                        </td>
+                                                                        <td>
+                                                                            <span class="badge failure-badge">14%</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="failure-color top-list-title">
+                                                                            <a href="97a3b77526a84a36eb0cd0ecdca82597530d9c905606bfd8c2946f70c269dd13.html">Sales Module UI Testing</a>
+                                                                        </td>
+                                                                        <td>
+                                                                            <span class="badge failure-badge">10%</span>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Tags</h3>
+                    <div class="card">
+                        <div class="card-body">
+                            <div>
+                                    <a href="17577daaad2fd309e0837b76421d7c81a554f65af8961466d1a2c3c19c8c6e49.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Ui&nbsp;&nbsp;&nbsp;34
+                                    </span>
+                                    </a>
+                                    <a href="8fd5c39c0daf1cec665468ee7c6c188e13ba13ed9ef4369399c0fe556324f50f.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> 215543T&nbsp;&nbsp;&nbsp;6
+                                    </span>
+                                    </a>
+                                    <a href="2e8f1269fe45189870d5526ad4ad731be44b38828d72bce8e524d95df0079f07.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> User&nbsp;&nbsp;&nbsp;15
+                                    </span>
+                                    </a>
+                                    <a href="d8723b84223143d478b2c9f36a410d52b17276955c37305b6baf0cc7f735b357.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> 215542N&nbsp;&nbsp;&nbsp;10
+                                    </span>
+                                    </a>
+                                    <a href="eecbef3131c1db3e154b900feda22fded6fe7636d7525984498bd3cc9ca8e2b4.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-21&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="8ce2828da246d4864d48192b3557b11d6bdbb75ee8493d4deabee54bbfa24d0c.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-6&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="226a899ff2c9c754ff4564ee458e094a107fecf227c4a157db00334a0805efed.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Bug&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="c7db5fe202721f2af9517722cad287db12ea1557ec5d442c6a88de2da6c5a0f3.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-13&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="3447f77379c16a5bb29fa6a6fe37b4b4d20fe344b053c4ae136be0a1e7290834.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Admin&nbsp;&nbsp;&nbsp;15
+                                    </span>
+                                    </a>
+                                    <a href="e0000a9d6087ecc218881f6b1d2906b88ee20fdd88956c91ccbda890e3910783.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TC-UI-CAT-U03&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="71764366ea49a66fc560532584787a143e24de4e1eb282fc6ffbec2ac9d19457.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-25&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="954b4432b34beefa28b8de7e862f441d73a093b0ed2e2866c54cd6ecae2075f1.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-2&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="0c12f206d13f9801a844cf4baa1a45351033186bf5f5147b7e837a733624d12c.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-17&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="3fc676afbc99e948614d4f69b44b3247ff22fbb97774abfdc61417b7a681118a.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-29&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="9e3a821a37f339bd37c4420fe810939960850741eeeeb3bbd150e291a72a4505.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TC-UI-CAT-A03&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="7e1f47907c4b682395b98a814fba88207e042a98b9b6ad349422f4e870772852.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-30&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="17d2a60d5f5ba941a6942256bcc92cc79470b7ea03051273ae0a181feb7e4419.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-7&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="11a74ab85f5c47864ed90aa02028f21608d51dd5495d69932ef9dae49aa06c86.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-10&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="2d0f97096782ee36b5df8dfa7b46d44bd8abe81b9d6209117c82f088795554e4.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-22&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="d28663bfb945d767e5dc1b8d2f9eaa667d01596f0c8a1a84dd3485d1ff1626a9.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Anonymous&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="7d3cd4bd95ded39f266abeeeb09d0f4d44359691e9452a70e6678df3c272ddc0.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TC-UI-CAT-U04&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="771deb6c7467365eb991588888c9324c1b2fd5cec883d9f2c386472c386efe38.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-3&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="58fa32e42aeb5af394fe1eec50c59feeafed60cb1acdcaf72d5fa5d98769be01.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-14&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="81bf1e09cd98a4143f3102f1189e03c77cb47cafd22295f4c5ca587b7ce4e50f.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-26&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="f76f0ce5a824445c962c2072966502a086e1c92bc3f73f44c7fbae9c5b6fd916.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> 215533M&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="4eb79cc0b3ec586fb3cf465a4f8c5388b2904e5a3b9986c9161ff07ab0235124.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-8&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="0f9ab48bd90aec59d32294dc043bda12b223fa34bf73140bbe83b255f903a280.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-31&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="95e4cb38c161b683565108e9acc1ed33df1ad6a153e063ce612a5cb578134f80.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-23&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="c2d9d11d86ba5985d2813233edb68a738b0ae0257cedf1a11173d164da5a09a7.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-4&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="e41b142a9fc6c086464fb6558fadc92ec60e7d6d4c975bbb03faf3f0e4729c68.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TC-UI-CAT-U01&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="74ca92abd64b6dac3d67b0c6371a0ef08e1852c53ab8c39179598ab1b0ba9978.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Bug Detection&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="7a85012ee73ff3a43bd10ae44ac410f4585913b27a0ae87756cfc3823abd4ffc.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-27&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="9ce8ec37a0e3bdf3f83a3ba49d266ad8dc1004079b9815704c26f13fcfdfef82.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TC-UI-CAT-A01&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="043919ec8d279884a1a78a1c472c20fe01b204339cf363e55b604c854dbc1d59.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-19&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="ca3edc8d0d40558b90ce590bf2749171f3a89322c3e2014952fe09bcddc12372.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-9&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="0729dfdb056d547681dc7d2d418e8c74b106ae6bb0d6ac9691aca406f3c86ac7.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-20&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="3f29f40213bfb1a9c2e9a13335efde9836e46180a4be56814117378ca607f789.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-5&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="a8f4275f2aeebbf674873d8e79f4433ead97ffc6612937f3fc67afb5098cf64e.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-12&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="8ba492c4b3b8a94da4a694bfdbe682aa24a6a74e31ea8c3e0fdbd49f51e0efba.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-24&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="9263d126f2e92fc41e6fa0542bf8a9184cbd4347d62a5a2288dd0926b6d5bf8b.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TC-UI-CAT-U02&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="ec89b08282a1c1c13a8724c8cf433da85f8329e8f4fd53c480985713c59b8166.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-1&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="d502dc603c10f814de1d12e09065afd5911163ee3e517107a294032dc06eee6d.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TC-UI-CAT-A02&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="578db9c66b4d1dbd466dbd1e4ecbc9c532bdb55b9c2d58c2a615f49bc275d3f0.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-28&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+                                            </div>
+                                        </div>
+                                        <div id="tests" class="tab-pane fade in">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <h3><i class="bi bi-gear"></i> Automated Tests</h3>
+
+                                            <table class="scenario-result-table table" id="scenario-results">
+                                                <thead>
+                                                <tr>
+                                                    <th>feature</th>
+                                                    <th class="test-name-column">Scenario</th>
+                                                    <th>Steps</th>
+                                                    <th>Started</th>
+                                                    <th>Total Duration</th>
+                                                    <th>Result</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="f3554d580ef10916c13a3594efd95c7f0c2273c3b0145ac2f3b4d3fe0785029a.html">Authentication Module - UI</a>
+                                                            </td>
+                                                            <td><a href="f97368030ea9fac38caa29914c32a3c76cfaec86e9a41f1a4d0259f07f882323.html">T-UI-12 - Verify that Empty username shows a validation message</a></td>
+                                                            <td>2</td>
+                                                            <td>05:02:06</td>
+                                                            <td>752ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="f3554d580ef10916c13a3594efd95c7f0c2273c3b0145ac2f3b4d3fe0785029a.html">Authentication Module - UI</a>
+                                                            </td>
+                                                            <td><a href="501cc446a71abb608c35d0410382758316e1049071e2a0fa4850001c7d9cc07a.html">T-UI-13 - Verify that Empty password shows a validation message</a></td>
+                                                            <td>2</td>
+                                                            <td>05:02:07</td>
+                                                            <td>688ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="f3554d580ef10916c13a3594efd95c7f0c2273c3b0145ac2f3b4d3fe0785029a.html">Authentication Module - UI</a>
+                                                            </td>
+                                                            <td><a href="23033bbb7bd6f32ed9eabcaa107755cc7993a7bd4d91da1679d1361e246f8aae.html">T-UI-14 - Verify that Invalid credentials show a global error message</a></td>
+                                                            <td>2</td>
+                                                            <td>05:02:08</td>
+                                                            <td>734ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="f3554d580ef10916c13a3594efd95c7f0c2273c3b0145ac2f3b4d3fe0785029a.html">Authentication Module - UI</a>
+                                                            </td>
+                                                            <td><a href="3a5b349634f134609ab546064e411104ac590126c0612a2637cd5675ebee1f36.html">T-UI-17 - Verify that Dashboard displays summary information</a></td>
+                                                            <td>4</td>
+                                                            <td>05:02:12</td>
+                                                            <td>934ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="f3554d580ef10916c13a3594efd95c7f0c2273c3b0145ac2f3b4d3fe0785029a.html">Authentication Module - UI</a>
+                                                            </td>
+                                                            <td><a href="c5c8830fe135e195d5cf3cd60edb293ca2b61a54eeda893dfe52d4c97972501f.html">T-UI-19 - Verify that Unauthenticated access is redirected to login</a></td>
+                                                            <td>3</td>
+                                                            <td>05:02:15</td>
+                                                            <td>487ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="f3554d580ef10916c13a3594efd95c7f0c2273c3b0145ac2f3b4d3fe0785029a.html">Authentication Module - UI</a>
+                                                            </td>
+                                                            <td><a href="410b8936ea8a0b936656e90d8ae7d7df692a400d67cdc7df37e995d426f39ec7.html">T-UI-20 - Verify that Normal user is blocked from an admin-only page </a></td>
+                                                            <td>3</td>
+                                                            <td>05:02:15</td>
+                                                            <td>900ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="587e463e47bb922df3bcf5084a09f5eb7e50aa7758a6bc222e9e15aa71595ca9.html">Admin & User UI – Category Management</a>
+                                                            </td>
+                                                            <td><a href="d52bac2a10b24fd1e47b8454995de61d10af4676b76bf7f00e4e05c61d3c7e7c.html">TC-UI-CAT-A01 Verify that Admin can view the category list</a></td>
+                                                            <td>3</td>
+                                                            <td>05:02:18</td>
+                                                            <td>885ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="587e463e47bb922df3bcf5084a09f5eb7e50aa7758a6bc222e9e15aa71595ca9.html">Admin & User UI – Category Management</a>
+                                                            </td>
+                                                            <td><a href="2138ef6806db1b6645434932e9704f87e27cbce1a1652b392d48b23aa414297a.html">TC-UI-CAT-A02 Verify that Admin can add a new main category with valid name</a></td>
+                                                            <td>7</td>
+                                                            <td>05:02:20</td>
+                                                            <td>945ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="587e463e47bb922df3bcf5084a09f5eb7e50aa7758a6bc222e9e15aa71595ca9.html">Admin & User UI – Category Management</a>
+                                                            </td>
+                                                            <td><a href="dd2a23a516cb38b06353c54c1bb1b5627c6a7e7cc3ed142837b677c7e43c57a7.html">TC-UI-CAT-A03 Verify that Validation error when category name is empty</a></td>
+                                                            <td>5</td>
+                                                            <td>05:02:21</td>
+                                                            <td>882ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result FAILURE">
+                                                            <td>
+                                                                    <a href="587e463e47bb922df3bcf5084a09f5eb7e50aa7758a6bc222e9e15aa71595ca9.html">Admin & User UI – Category Management</a>
+                                                            </td>
+                                                            <td><a href="67424c94128a63284f6e65e388d5ec5f54e33ef08d5189b6ffadc322cf418802.html">TC-UI-CAT-U01 Verify that User can view category list in read-only mode</a></td>
+                                                            <td>5</td>
+                                                            <td>05:02:27</td>
+                                                            <td>864ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-x-circle-fill failure-icon ' title='FAILURE'></i></a> <span style="display:none">FAILURE</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="587e463e47bb922df3bcf5084a09f5eb7e50aa7758a6bc222e9e15aa71595ca9.html">Admin & User UI – Category Management</a>
+                                                            </td>
+                                                            <td><a href="296496ff6216f840097c2ca97704ce206560d1cbeeba846b921c09c6c4cafbe8.html">TC-UI-CAT-U02 Verify that User can search categories by name</a></td>
+                                                            <td>5</td>
+                                                            <td>05:02:32</td>
+                                                            <td>864ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="587e463e47bb922df3bcf5084a09f5eb7e50aa7758a6bc222e9e15aa71595ca9.html">Admin & User UI – Category Management</a>
+                                                            </td>
+                                                            <td><a href="87851a0a9ddb73105a49290ca085e547753cf40f26c357d706f4ac66e922b231.html">TC-UI-CAT-U03 Verify that User can filter categories by parent</a></td>
+                                                            <td>4</td>
+                                                            <td>05:02:33</td>
+                                                            <td>851ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="587e463e47bb922df3bcf5084a09f5eb7e50aa7758a6bc222e9e15aa71595ca9.html">Admin & User UI – Category Management</a>
+                                                            </td>
+                                                            <td><a href="0eeab96dcc45e9eed3bd7caa1348f58d677adf19144edbfa6b4c80c76365edb2.html">TC-UI-CAT-U04 Verify that Cancel button returns user to category list</a></td>
+                                                            <td>4</td>
+                                                            <td>05:02:35</td>
+                                                            <td>862ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result FAILURE">
+                                                            <td>
+                                                                    <a href="80e55b52dc2ff20657f51cbcfae0fa56bad7dc9fa6cd9229f94fe6cd6502c1a0.html">Plants Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="7f3891aa234ede0fe2f1463587d4d5c8d4d0d631d7fa377e41494219ed10ad48.html">T-UI-21 - Verify that Admin views Plants page with all management controls visible</a></td>
+                                                            <td>7</td>
+                                                            <td>05:02:40</td>
+                                                            <td>401ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-x-circle-fill failure-icon ' title='FAILURE'></i></a> <span style="display:none">FAILURE</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="80e55b52dc2ff20657f51cbcfae0fa56bad7dc9fa6cd9229f94fe6cd6502c1a0.html">Plants Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="c73dbf4db988fa71950ac3b26f26046c53a3d352e00141145f778a3b53ecb244.html">T-UI-22 - Verify that Admin successfully adds a new plant with valid data</a></td>
+                                                            <td>13</td>
+                                                            <td>05:02:44</td>
+                                                            <td>379ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="80e55b52dc2ff20657f51cbcfae0fa56bad7dc9fa6cd9229f94fe6cd6502c1a0.html">Plants Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="2459c25738b63911b87924612421a44ee6540ac09499f678d11487ecd89a393e.html">T-UI-23 - Verify that Add Plant form shows field-level validation errors for invalid inputs</a></td>
+                                                            <td>10</td>
+                                                            <td>05:02:48</td>
+                                                            <td>367ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="80e55b52dc2ff20657f51cbcfae0fa56bad7dc9fa6cd9229f94fe6cd6502c1a0.html">Plants Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="18b860e6cb5d69285f5af2eee5d8aeb72d84159d8e8dc939ef4af6777a9a83fa.html">T-UI-24 - Verify that Admin edits a plant and the Low badge appears when quantity drops below 5</a></td>
+                                                            <td>9</td>
+                                                            <td>05:02:50</td>
+                                                            <td>366ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="80e55b52dc2ff20657f51cbcfae0fa56bad7dc9fa6cd9229f94fe6cd6502c1a0.html">Plants Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="e7963eece3bbaa5294fd64d61b2e5d98e5b9a89a38dfb4ed939a898a955da403.html">T-UI-25 - Verify that Admin deletes a plant via confirmation prompt</a></td>
+                                                            <td>9</td>
+                                                            <td>05:02:56</td>
+                                                            <td>361ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result FAILURE">
+                                                            <td>
+                                                                    <a href="80e55b52dc2ff20657f51cbcfae0fa56bad7dc9fa6cd9229f94fe6cd6502c1a0.html">Plants Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="1aa15f9bd28c8e9c5564217aae26b5aaef9e2d89fd7aec777e05d0f47c9b78ea.html">T-UI-26 - Verify that User views Plants page and all management controls are hidden</a></td>
+                                                            <td>6</td>
+                                                            <td>05:03:01</td>
+                                                            <td>399ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-x-circle-fill failure-icon ' title='FAILURE'></i></a> <span style="display:none">FAILURE</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result FAILURE">
+                                                            <td>
+                                                                    <a href="80e55b52dc2ff20657f51cbcfae0fa56bad7dc9fa6cd9229f94fe6cd6502c1a0.html">Plants Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="5e0cce56cedd852c8acc87caaf829e8e947b5074703484f1daea15af445b311a.html">T-UI-27 - Verify that User searches for a plant by name</a></td>
+                                                            <td>7</td>
+                                                            <td>05:03:13</td>
+                                                            <td>366ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-x-circle-fill failure-icon ' title='FAILURE'></i></a> <span style="display:none">FAILURE</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="80e55b52dc2ff20657f51cbcfae0fa56bad7dc9fa6cd9229f94fe6cd6502c1a0.html">Plants Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="0c344a1c6f8c9cf0ebef90633431bb3733a0d9841df655b7644d73320f0e01b1.html">T-UI-28 - Verify that User filters plants by category</a></td>
+                                                            <td>7</td>
+                                                            <td>05:03:15</td>
+                                                            <td>390ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="80e55b52dc2ff20657f51cbcfae0fa56bad7dc9fa6cd9229f94fe6cd6502c1a0.html">Plants Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="bfa781b0d6977dc0bcadc707b0e65cab66a3c534c46309e9385854b53c58cb41.html">T-UI-29 - Verify that User sorts plant list by Name, Price, and Stock ascending then descending</a></td>
+                                                            <td>12</td>
+                                                            <td>05:03:25</td>
+                                                            <td>393ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="80e55b52dc2ff20657f51cbcfae0fa56bad7dc9fa6cd9229f94fe6cd6502c1a0.html">Plants Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="9e4978ffdb0751b614d16b38d02753f4dd11181d38eef11ecb7e395bd92792ee.html">T-UI-30 - Verify that User directly navigates to /ui/plants/add and is denied access</a></td>
+                                                            <td>4</td>
+                                                            <td>05:03:39</td>
+                                                            <td>362ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result FAILURE">
+                                                            <td>
+                                                                    <a href="80e55b52dc2ff20657f51cbcfae0fa56bad7dc9fa6cd9229f94fe6cd6502c1a0.html">Plants Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="15e935dd763e07e65947f1747e491b0e311f00b9293fc0a2219b5dc1098f04bd.html">T-UI-31 - Verify that Plants table fourth column header should be named Quantity not Stock</a></td>
+                                                            <td>4</td>
+                                                            <td>05:03:41</td>
+                                                            <td>360ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-x-circle-fill failure-icon ' title='FAILURE'></i></a> <span style="display:none">FAILURE</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result FAILURE">
+                                                            <td>
+                                                                    <a href="97a3b77526a84a36eb0cd0ecdca82597530d9c905606bfd8c2946f70c269dd13.html">Sales Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="c1bf271c182e1b0c877543d1be69127f522b067a026ca8f84547c8e6835e7bfd.html">T-UI-1 - Verify that Check sales list pagination and default sorting</a></td>
+                                                            <td>7</td>
+                                                            <td>05:03:45</td>
+                                                            <td>361ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-x-circle-fill failure-icon ' title='FAILURE'></i></a> <span style="display:none">FAILURE</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="97a3b77526a84a36eb0cd0ecdca82597530d9c905606bfd8c2946f70c269dd13.html">Sales Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="58f4ab5097c3d5f2e5214e5407c39ab2c2eaa4b80c48ed2c9e47556bab5324ee.html">T-UI-2 - Verify that Test column sorting functionality</a></td>
+                                                            <td>14</td>
+                                                            <td>05:03:49</td>
+                                                            <td>385ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="97a3b77526a84a36eb0cd0ecdca82597530d9c905606bfd8c2946f70c269dd13.html">Sales Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="c70691c5b0d73e5667fd515b009cb33ed7d989bd097b19fcb0c4da27b37aa69b.html">T-UI-3 - Verify that Test selling a plant (Happy path)</a></td>
+                                                            <td>10</td>
+                                                            <td>05:04:06</td>
+                                                            <td>356ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="97a3b77526a84a36eb0cd0ecdca82597530d9c905606bfd8c2946f70c269dd13.html">Sales Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="f15da2abe0a9da18694a44e1034de16692230f24cb10ed5eb29c453d1340dc40.html">T-UI-4 - Verify that Test validation messages for selling a plant</a></td>
+                                                            <td>10</td>
+                                                            <td>05:04:09</td>
+                                                            <td>378ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="97a3b77526a84a36eb0cd0ecdca82597530d9c905606bfd8c2946f70c269dd13.html">Sales Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="c22e4acc5b966ce51ac88d5f655535a6199b75cb52d43f744d8fb24a7c21324c.html">T-UI-5 - Verify that Test Delete Sale confirmation</a></td>
+                                                            <td>8</td>
+                                                            <td>05:04:15</td>
+                                                            <td>358ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="97a3b77526a84a36eb0cd0ecdca82597530d9c905606bfd8c2946f70c269dd13.html">Sales Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="ea698175f0e83f60d081f69907dd335c97d8e2edb9a6e36d4812d42e65e12934.html">T-UI-6 - Verify that Check read-only access to sales list</a></td>
+                                                            <td>6</td>
+                                                            <td>05:04:27</td>
+                                                            <td>374ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="97a3b77526a84a36eb0cd0ecdca82597530d9c905606bfd8c2946f70c269dd13.html">Sales Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="62f39a4ba653f46f7b0593783baed4ed316be7fd49643ad287230a0d3f8bee1b.html">T-UI-7 - Verify that Check 'No sales found' empty state</a></td>
+                                                            <td>5</td>
+                                                            <td>05:04:39</td>
+                                                            <td>365ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="97a3b77526a84a36eb0cd0ecdca82597530d9c905606bfd8c2946f70c269dd13.html">Sales Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="83076b40bba999b606708c5f195e0754f707d930a195353c0e464abc93fa344d.html">T-UI-8 - Verify that Check if Admin buttons are hidden</a></td>
+                                                            <td>6</td>
+                                                            <td>05:04:41</td>
+                                                            <td>369ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="97a3b77526a84a36eb0cd0ecdca82597530d9c905606bfd8c2946f70c269dd13.html">Sales Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="6cbaa5c32bf3d700e0a1d973eb5f6dfcd335a04f03eefb578315d43d8508229f.html">T-UI-9 - Verify that Test 403 redirect by forcing URL</a></td>
+                                                            <td>4</td>
+                                                            <td>05:04:54</td>
+                                                            <td>351ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="scenario-result SUCCESS">
+                                                            <td>
+                                                                    <a href="97a3b77526a84a36eb0cd0ecdca82597530d9c905606bfd8c2946f70c269dd13.html">Sales Module UI Testing</a>
+                                                            </td>
+                                                            <td><a href="38ff0302f5e3bbd62695f7da5a36b997ed9d81467903a95c4011679bb17ed7a4.html">T-UI-10 - Verify that Test if grid sorting works for normal users</a></td>
+                                                            <td>6</td>
+                                                            <td>05:04:56</td>
+                                                            <td>369ms</td>
+                                                            <td><a href='##beforetable'><i class='bi bi-check-circle-fill success-icon ' title='SUCCESS'></i></a> <span style="display:none">SUCCESS</span>
+                                                            </td>
+                                                        </tr>
+                                                </tbody>
+                                            </table>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <h3><i class="bi bi-hand-index-thumb"></i> Manual Tests</h3>
+
+                                                No manual tests were recorded
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3>Tags</h3>
+                    <div class="card">
+                        <div class="card-body">
+                            <div>
+                                    <a href="17577daaad2fd309e0837b76421d7c81a554f65af8961466d1a2c3c19c8c6e49.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Ui&nbsp;&nbsp;&nbsp;34
+                                    </span>
+                                    </a>
+                                    <a href="8fd5c39c0daf1cec665468ee7c6c188e13ba13ed9ef4369399c0fe556324f50f.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> 215543T&nbsp;&nbsp;&nbsp;6
+                                    </span>
+                                    </a>
+                                    <a href="2e8f1269fe45189870d5526ad4ad731be44b38828d72bce8e524d95df0079f07.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> User&nbsp;&nbsp;&nbsp;15
+                                    </span>
+                                    </a>
+                                    <a href="d8723b84223143d478b2c9f36a410d52b17276955c37305b6baf0cc7f735b357.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> 215542N&nbsp;&nbsp;&nbsp;10
+                                    </span>
+                                    </a>
+                                    <a href="eecbef3131c1db3e154b900feda22fded6fe7636d7525984498bd3cc9ca8e2b4.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-21&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="8ce2828da246d4864d48192b3557b11d6bdbb75ee8493d4deabee54bbfa24d0c.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-6&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="226a899ff2c9c754ff4564ee458e094a107fecf227c4a157db00334a0805efed.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Bug&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="c7db5fe202721f2af9517722cad287db12ea1557ec5d442c6a88de2da6c5a0f3.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-13&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="3447f77379c16a5bb29fa6a6fe37b4b4d20fe344b053c4ae136be0a1e7290834.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Admin&nbsp;&nbsp;&nbsp;15
+                                    </span>
+                                    </a>
+                                    <a href="e0000a9d6087ecc218881f6b1d2906b88ee20fdd88956c91ccbda890e3910783.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TC-UI-CAT-U03&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="71764366ea49a66fc560532584787a143e24de4e1eb282fc6ffbec2ac9d19457.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-25&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="954b4432b34beefa28b8de7e862f441d73a093b0ed2e2866c54cd6ecae2075f1.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-2&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="0c12f206d13f9801a844cf4baa1a45351033186bf5f5147b7e837a733624d12c.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-17&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="3fc676afbc99e948614d4f69b44b3247ff22fbb97774abfdc61417b7a681118a.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-29&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="9e3a821a37f339bd37c4420fe810939960850741eeeeb3bbd150e291a72a4505.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TC-UI-CAT-A03&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="7e1f47907c4b682395b98a814fba88207e042a98b9b6ad349422f4e870772852.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-30&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="17d2a60d5f5ba941a6942256bcc92cc79470b7ea03051273ae0a181feb7e4419.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-7&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="11a74ab85f5c47864ed90aa02028f21608d51dd5495d69932ef9dae49aa06c86.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-10&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="2d0f97096782ee36b5df8dfa7b46d44bd8abe81b9d6209117c82f088795554e4.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-22&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="d28663bfb945d767e5dc1b8d2f9eaa667d01596f0c8a1a84dd3485d1ff1626a9.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Anonymous&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="7d3cd4bd95ded39f266abeeeb09d0f4d44359691e9452a70e6678df3c272ddc0.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TC-UI-CAT-U04&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="771deb6c7467365eb991588888c9324c1b2fd5cec883d9f2c386472c386efe38.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-3&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="58fa32e42aeb5af394fe1eec50c59feeafed60cb1acdcaf72d5fa5d98769be01.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-14&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="81bf1e09cd98a4143f3102f1189e03c77cb47cafd22295f4c5ca587b7ce4e50f.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-26&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="f76f0ce5a824445c962c2072966502a086e1c92bc3f73f44c7fbae9c5b6fd916.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> 215533M&nbsp;&nbsp;&nbsp;11
+                                    </span>
+                                    </a>
+                                    <a href="4eb79cc0b3ec586fb3cf465a4f8c5388b2904e5a3b9986c9161ff07ab0235124.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-8&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="0f9ab48bd90aec59d32294dc043bda12b223fa34bf73140bbe83b255f903a280.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-31&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="95e4cb38c161b683565108e9acc1ed33df1ad6a153e063ce612a5cb578134f80.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-23&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="c2d9d11d86ba5985d2813233edb68a738b0ae0257cedf1a11173d164da5a09a7.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-4&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="e41b142a9fc6c086464fb6558fadc92ec60e7d6d4c975bbb03faf3f0e4729c68.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TC-UI-CAT-U01&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="74ca92abd64b6dac3d67b0c6371a0ef08e1852c53ab8c39179598ab1b0ba9978.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> Bug Detection&nbsp;&nbsp;&nbsp;4
+                                    </span>
+                                    </a>
+                                    <a href="7a85012ee73ff3a43bd10ae44ac410f4585913b27a0ae87756cfc3823abd4ffc.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-27&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="9ce8ec37a0e3bdf3f83a3ba49d266ad8dc1004079b9815704c26f13fcfdfef82.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TC-UI-CAT-A01&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="043919ec8d279884a1a78a1c472c20fe01b204339cf363e55b604c854dbc1d59.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-19&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="ca3edc8d0d40558b90ce590bf2749171f3a89322c3e2014952fe09bcddc12372.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-9&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="0729dfdb056d547681dc7d2d418e8c74b106ae6bb0d6ac9691aca406f3c86ac7.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-20&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="3f29f40213bfb1a9c2e9a13335efde9836e46180a4be56814117378ca607f789.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-5&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="a8f4275f2aeebbf674873d8e79f4433ead97ffc6612937f3fc67afb5098cf64e.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-12&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="8ba492c4b3b8a94da4a694bfdbe682aa24a6a74e31ea8c3e0fdbd49f51e0efba.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-24&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="9263d126f2e92fc41e6fa0542bf8a9184cbd4347d62a5a2288dd0926b6d5bf8b.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TC-UI-CAT-U02&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="ec89b08282a1c1c13a8724c8cf433da85f8329e8f4fd53c480985713c59b8166.html">
+                                    <span class="tag-badge badge" style="background-color:#fd938e; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-1&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="d502dc603c10f814de1d12e09065afd5911163ee3e517107a294032dc06eee6d.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> TC-UI-CAT-A02&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                                    <a href="578db9c66b4d1dbd466dbd1e4ecbc9c532bdb55b9c2d58c2a615f49bc275d3f0.html">
+                                    <span class="tag-badge badge" style="background-color:#b0cf73; margin:1em;padding:4px;">
+                                        <i class="bi bi-tag-fill"></i> T-UI-28&nbsp;&nbsp;&nbsp;1
+                                    </span>
+                                    </a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="beforefooter"></div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <span class="version">Serenity BDD version 4.0.15</span>
+        </div>
+    </div>
+</div>
+
+<!-- Chart data -->
+    <!-- PIE CHART -->
+    <script>
+
+        // The results pie chart
+        const outcomeChartCtx = document.getElementById('resultChart');
+
+        // Options define for display value on top of bars
+        const outcomeDetailsReports = [
+            { title: 'Passing Test Cases', link: "8034263c5edd2fd7db3ada4026e55bf0944fe16e862d10180c0104473dfb28a3.html" },
+            { title: 'Pending Test Cases', link: "8c5d7e9567926148ddd54b045371f31da5984b5b983ba717f5bb19b999cf7237.html" },
+            { title: 'Ignored Test Cases', link: "00652e47531f697f43f4828ac2e0cbc53c296cab0320293b05526c133fc82808.html" },
+            { title: 'Skipped Test Cases', link: "564a4eecee40ca8524c8aeb84d2bae7b2a989c0f78e549116f572139fe084282.html" },
+            { title: 'Aborted Test Cases',  link: "b91f41db27bee9130efca2849d80545f4c034cf18946eb827ff9354c45c552d7.html"},
+            { title: 'Failed Test Cases', link: "b48dafd397ef5c92fd1eeec54e40f5eef03febe1924a2ffbe9dce80addbb0735.html"  },
+            { title: 'Broken Test Cases', link: "f639ee47fd08ecc72c27e97580dd2282851638cfd0ce0aa88979943d325241ff.html"    },
+            { title: 'Compromised Test Cases',  link: "a4ea5596b1b37a260f20cfd84b05fd74a178f068e11115f9c0aca5932a493dfb.html" },
+        ]
+        const outcomeData = {
+            labels: ['Passing Test Cases', 'Pending Test Cases', 'Ignored Test Cases', 'Skipped Test Cases', 'Aborted Test Cases', 'Failed Test Cases', 'Broken Test Cases', 'Compromised Test Cases','Undefined Test Cases'],
+            datasets: [{
+                label: 'Test Results',
+                fill: false,
+                data: [{meta: 'Passing tests', value: 28}, {meta: 'Pending tests', value: 0}, {meta: 'Ignored tests', value: 0}, {meta: 'Skipped tests', value: 0}, {meta: 'Aborted tests', value: 0}, {meta: 'Failing tests', value: 6}, {meta: 'Broken tests', value: 0}, {meta: 'Compromised tests', value: 0}],
+                backgroundColor: ['rgba(153,204,51,0.5)','rgba(165, 199, 238, 0.5)','rgba(168, 168, 168, 0.5)','rgba(238, 224, 152, 0.75)','rgba(255, 153, 102, 0.5)','rgba(255, 22, 49, 0.5)','rgba(255, 97, 8, 0.5)','rgba(255, 104, 255, 0.5)','rgba(83, 50, 168, 0.5)'],
+                borderColor: ['rgba(153,204,51,1)','rgba(165, 199, 238, 1)','rgba(168, 168, 168, 1)','rgba(238, 224, 152, 1)','rgba(255, 153, 102, 1)','rgba(255, 22, 49, 1)','rgba(255, 97, 8, 1)','rgba(255, 104, 255, 1)','rgba(83, 50, 168, 1)'],
+                borderWidth: 1,
+            }]
+        }
+        const outcomeOptions = {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                },
+                // Change options for ALL labels of THIS CHART
+                datalabels: {
+                    color: '#444444',
+                    'font.weight': 'bold',
+                    formatter: (value, ctx) => {
+                        let sum = 0;
+                        let dataArr = ctx.chart.data.datasets[0].data;
+                        dataArr.map(data => {
+                            sum += data;
+                        });
+                        let percentage = (value * 100 / sum).toFixed(0) + "%";
+                        if (percentage === '0%' || percentage === 'NaN%') {
+                            return '';
+                        } else {
+                            return percentage;
+                        }
+                    },
+                },
+            }
+        }
+
+        const outcomeChart = new Chart(outcomeChartCtx, {
+            type: 'doughnut',
+            data: outcomeData,
+            options: outcomeOptions,
+            plugins: [
+                {
+                    id: 'text',
+                    beforeDraw: function (chart, a, b) {
+                        var width = chart.width,
+                            height = chart.height,
+                            ctx = chart.ctx;
+
+                        ctx.restore();
+                        var fontSize = (height / 200).toFixed(1);
+                        ctx.font = fontSize + "em sans-serif";
+                        ctx.textBaseline = "middle";
+
+                        var text = "82%"
+                        textX = 10 + Math.round((width - ctx.measureText(text).width) / 2);
+                        textY = (height / 2) - 40;
+
+                        ctx.fillText(text, textX, textY);
+                        ctx.save();
+                    }
+                }]
+        });
+
+        function clickHandler(click) {
+            const points = outcomeChart.getElementsAtEventForMode(click, 'nearest', {intersect: true}, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                window.open(outcomeDetailsReports[firstPoint.index].link, "_self")
+
+            }
+        }
+        outcomeChartCtx.onclick = clickHandler;
+    </script>
+    <!-- END PIE CHART -->
+
+    <!-- SUMMARY BAR CHART -->
+    <script>
+
+        // The Severity bar chart
+        const severityChartCtx = document.getElementById('severityChart');
+
+        // Options define for display value on top of bars
+
+        const severityDetailsReports = [
+            { title: 'Passing Scenarios', link: "8034263c5edd2fd7db3ada4026e55bf0944fe16e862d10180c0104473dfb28a3.html" },
+            { title: 'Pending Scenarios', link: "8c5d7e9567926148ddd54b045371f31da5984b5b983ba717f5bb19b999cf7237.html" },
+            { title: 'Ignored Scenarios', link: "00652e47531f697f43f4828ac2e0cbc53c296cab0320293b05526c133fc82808.html" },
+            { title: 'Skipped Scenarios', link: "564a4eecee40ca8524c8aeb84d2bae7b2a989c0f78e549116f572139fe084282.html" },
+            { title: 'Aborted Scenarios',  link: "b91f41db27bee9130efca2849d80545f4c034cf18946eb827ff9354c45c552d7.html"},
+            { title: 'Failed Scenarios', link: "b48dafd397ef5c92fd1eeec54e40f5eef03febe1924a2ffbe9dce80addbb0735.html"  },
+            { title: 'Broken Scenarios', link: "f639ee47fd08ecc72c27e97580dd2282851638cfd0ce0aa88979943d325241ff.html"    },
+            { title: 'Compromised Scenarios',  link: "a4ea5596b1b37a260f20cfd84b05fd74a178f068e11115f9c0aca5932a493dfb.html" },
+        ]
+        const severityData = {
+            labels: ['Passing', 'Pending', 'Ignored', 'Skipped', 'Aborted', 'Failed', 'Broken', 'Compromised'],
+            datasets: [
+                {
+                    label: 'Automated',
+                    data: [28,0,0,0,0,6,0,0],
+                    backgroundColor: ['rgba(153,204,51,0.5)','rgba(165, 199, 238, 0.5)','rgba(168, 168, 168, 0.5)','rgba(238, 224, 152, 0.75)','rgba(255, 153, 102, 0.5)','rgba(255, 22, 49, 0.5)','rgba(255, 97, 8, 0.5)','rgba(255, 104, 255, 0.5)','rgba(83, 50, 168, 0.5)'],
+                    borderColor: ['rgba(153,204,51,1)','rgba(165, 199, 238, 1)','rgba(168, 168, 168, 1)','rgba(238, 224, 152, 1)','rgba(255, 153, 102, 1)','rgba(255, 22, 49, 1)','rgba(255, 97, 8, 1)','rgba(255, 104, 255, 1)','rgba(83, 50, 168, 1)'],
+                    borderWidth: 1
+                },
+                {
+                    label: 'Manual',
+                    data: [0,0,0,0,0,0,0,0],
+                    backgroundColor: ['rgba(153,204,51,0.25)','rgba(165, 199, 238, 0.25)','rgba(168, 168, 168, 0.25)','rgba(238, 224, 152, 0.375)','rgba(255, 153, 102, 0.25)','rgba(255, 22, 49, 0.25)','rgba(255, 97, 8, 0.25)','rgba(255, 104, 255, 0.25)','rgba(83, 50, 168, 0.25)'],
+                    borderColor: ['rgba(153,204,51,1)','rgba(165, 199, 238, 1)','rgba(168, 168, 168, 1)','rgba(238, 224, 152, 1)','rgba(255, 153, 102, 1)','rgba(255, 22, 49, 1)','rgba(255, 97, 8, 1)','rgba(255, 104, 255, 1)','rgba(83, 50, 168, 1)'],
+                    borderWidth: 1
+                },
+
+            ]
+        }
+        const severityOptions = {
+            responsive: true,
+            skipNull: true,
+            scales: {
+                x: {
+                    stacked: true,
+                },
+                y: {
+                    stacked: true,
+                }
+            },
+            plugins: {
+                // Change options for ALL labels of THIS CHART
+                datalabels: {
+                    color: '#444444',
+                    'font.weight': 'bold',
+                    formatter: (value, ctx) => {
+                        if (value === 0) {
+                            return '';
+                        } else {
+                            return value;
+                        }
+                    },
+                }
+            }
+        }
+        const severityChart = new Chart(severityChartCtx, {
+            type: 'bar',
+            data: severityData,
+            options: severityOptions
+        });
+
+        function clickHandler(click) {
+            const points = severityChart.getElementsAtEventForMode(click, 'nearest', {intersect: true}, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                window.open(severityDetailsReports[firstPoint.index].link, "_self")
+
+            }
+        }
+        severityChartCtx.onclick = clickHandler;
+    </script>
+    <!-- END SUMMARY CHART -->
+
+    <!-- DURATION CHART -->
+    <script>
+
+        // Options define for display value on top of bars
+        const durationDetailsReports = [
+                {title: "Under 1 second", link: "5676bb804f0634b199dfdb6e9af03fbeb005c35973d5c86f5bb5a5c22a57cf41.html"},
+                {title: "1 to 10 seconds", link: "2b831e256ad70aaba8f53b0cd6619252fcbe90610501a1a0a9389b42ee85266e.html"},
+                {title: "10 to 30 seconds", link: "1e3d9f7529326bd439bfa2c0055c9ce528b5849a2e3ac04c3c085fe034aaff3f.html"},
+                {title: "30 to 60 seconds", link: "0b81d4e533fd3bb66b38dc82c78520301fe786cdcefe48a026af3bec298e3bc5.html"},
+                {title: "1 to 2 minutes", link: "a38fb5e38a124563ae503a82d7697c51fd0ac67899a0c4d5ea90fe0c9d6b0499.html"},
+                {title: "2 to 5 minutes", link: "aedf4f2ec2048690157d5e55cf2eaae42f4b5b2d02ff8cf5fc94252bbcda2a2a.html"},
+                {title: "5 to 10 minutes", link: "6a4c92e38185f59ae951bdcd01f98613d6602d973673bf4cf1900a4eaa009f22.html"},
+                {title: "10 minutes or over", link: "fe3edd8b4e629b61a49b225094bf6f0aa1f5a8a0352864582fcb0a242cc9fbd5.html"},
+        ]
+        // The Severity bar chart
+        const durationChartCtx = document.getElementById('durationChart');
+
+        // Options define for display value on top of bars
+
+        const durationData = {
+            labels: ['Under 1 second','1 to 10 seconds','10 to 30 seconds','30 to 60 seconds','1 to 2 minutes','2 to 5 minutes','5 to 10 minutes','10 minutes or over'],
+            datasets: [{
+                label: 'Number of tests per duration',
+                fill: false,
+                data: ['34','0','0','0','0','0','0','0'],
+                backgroundColor: 'rgba(83, 146, 255,0.5)',
+                borderColor: 'rgba(83, 146, 255, 1)',
+            }]
+        }
+        const durationOptions = {
+            responsive: true,
+            plugins: {
+                // Change options for ALL labels of THIS CHART
+                datalabels: {
+                    color: '#444444',
+                    'font.weight': 'bold',
+                    formatter: (value, ctx) => {
+                        if (value > 0) {
+                            return value;
+                        } else {
+                            return '';
+                        }
+                    },
+                },
+                tooltip: {
+                    enabled: true,
+                    usePointStyle: true,
+                    callbacks: {
+                        label: (data) => {
+                            return data.parsed.y + ' tests'
+                        }
+                    },
+                },
+            },
+        }
+
+        const durationChart = new Chart(durationChartCtx, {
+            type: 'bar',
+            data: durationData,
+            options: durationOptions
+        });
+
+        function durationClickHandler(click) {
+            const points = durationChart.getElementsAtEventForMode(click, 'nearest', {intersect: true}, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                window.open(durationDetailsReports[firstPoint.index].link, "_self")
+
+            }
+        }
+
+        durationChartCtx.onclick = durationClickHandler;
+    </script>
+    <!-- END DURATION CHART -->
+
+
+
+    <!-- COVERAGE BAR CHART -->
+    <script>
+
+        // The coverage bar chart
+        const coverageChartCtx = document.getElementById('coverageChart');
+
+        // Options define for display value on top of bars
+
+        const coverageReports = [
+            {
+                title: 'Authentication Module - UI',
+                result: 'SUCCESS',
+                link: "f3554d580ef10916c13a3594efd95c7f0c2273c3b0145ac2f3b4d3fe0785029a.html"
+            },
+            {
+                title: 'Admin & User UI – Category Management',
+                result: 'FAILURE',
+                link: "587e463e47bb922df3bcf5084a09f5eb7e50aa7758a6bc222e9e15aa71595ca9.html"
+            },
+            {
+                title: 'Plants Module UI Testing',
+                result: 'FAILURE',
+                link: "80e55b52dc2ff20657f51cbcfae0fa56bad7dc9fa6cd9229f94fe6cd6502c1a0.html"
+            },
+            {
+                title: 'Sales Module UI Testing',
+                result: 'FAILURE',
+                link: "97a3b77526a84a36eb0cd0ecdca82597530d9c905606bfd8c2946f70c269dd13.html"
+            },
+        ]
+        const coverageData = {
+            labels: [
+                'Authentication Module - UI',
+                'Admin & User UI – Category Management',
+                'Plants Module UI Testing',
+                'Sales Module UI Testing',
+            ],
+            datasets: [
+                {
+                    label: ['Passing Tests'],
+                    data: [6,6,7,9],
+                    backgroundColor: [ 'rgba(153,204,51,0.5)' ]
+                },
+                {
+                    label: ['Pending Tests'],
+                    data: [0,0,0,0],
+                    backgroundColor: [ 'rgba(165, 199, 238, 0.5)' ]
+                },
+                {
+                    label: ['Ignored Tests'],
+                    data: [0,0,0,0],
+                    backgroundColor: [ 'rgba(168, 168, 168, 0.5)' ]
+                },
+                {
+                    label: ['Skipped Tests'],
+                    data: [0,0,0,0],
+                    backgroundColor: [ 'rgba(238, 224, 152, 0.75)' ]
+                },
+                {
+                    label: ['Aborted Tests'],
+                    data: [0,0,0,0],
+                    backgroundColor: [ 'rgba(255, 153, 102, 0.5)' ]
+                },
+                {
+                    label: ['Failed Tests'],
+                    data: [0,1,4,1],
+                    backgroundColor: [ 'rgba(255, 22, 49, 0.5)' ]
+                },
+                {
+                    label: ['Errors'],
+                    data: [0,0,0,0],
+                    backgroundColor: [ 'rgba(255, 97, 8, 0.5)' ]
+                },
+                {
+                    label: ['Compromised Tests'],
+                    data: [0,0,0,0],
+                    backgroundColor: [ 'rgba(255, 104, 255, 0.5)' ]
+                },
+            ]
+        }
+        const coverageOptions = {
+            responsive: true,
+            indexAxis: 'y',
+            // barPercentage: ,
+            barThickness: 'flex',
+            maxBarThickness: 30,
+            minBarLength: 2,
+            skipNull: true,
+            scales: {
+                x: {
+                    stacked: true,
+                },
+                y: {
+                    stacked: true,
+                }
+            },
+            plugins: {
+                // Change options for ALL labels of THIS CHART
+                datalabels: {
+                    color: '#444444',
+                    'font.weight': 'bold'
+                },
+                tooltip: {
+                    enabled: true,
+                    usePointStyle: true,
+                },
+            },
+        }
+
+        const coverageChart = new Chart(coverageChartCtx, {
+            type: 'bar',
+            data: coverageData,
+            options: coverageOptions
+        });
+
+        function coverageClickHandler(click) {
+            const points = coverageChart.getElementsAtEventForMode(click, 'nearest', {intersect: true}, true);
+            if (points.length) {
+                const firstPoint = points[0];
+                if (coverageReports[firstPoint.index].link) {
+                    window.open(coverageReports[firstPoint.index].link, "_self")
+                }
+            }
+        }
+
+        coverageChartCtx.onclick = coverageClickHandler;
+    </script>
+    <!-- END COVERAGE CHART -->
+
+</body>
+</html>

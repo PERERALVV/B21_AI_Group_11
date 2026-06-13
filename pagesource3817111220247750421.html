@@ -1,0 +1,101 @@
+<html lang='en'><head><link href='prism/prism.css' rel='stylesheet' /></head><body><script src='prism/prism.js'></script><body><div><pre><code class='language-html'>&lt;html&gt;<br/>
+ &lt;head&gt;<br/>
+  &lt;title&gt;QA Training App | Categories&lt;/title&gt;<br/>
+  &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"&gt;<br/>
+  &lt;link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"&gt;<br/>
+  &lt;link rel="stylesheet" href="/css/app.css"&gt;<br/>
+ &lt;/head&gt;<br/>
+ &lt;body&gt;<br/>
+  &lt;div&gt;<br/>
+   &lt;div class="app-layout"&gt;&lt;!-- ✅ SIDEBAR --&gt;<br/>
+    &lt;div class="sidebar nav flex-column"&gt;&lt;!-- Logo --&gt;<br/>
+     &lt;div class="sidebar-logo text-center mb-4"&gt;&lt;img src="/images/logo.png" alt="QA Training App Logo" width="100"&gt;<br/>
+     &lt;/div&gt;&lt;a href="/ui/dashboard" class="nav-link text-white "&gt; &lt;i class="bi bi-speedometer2 me-2"&gt;&lt;/i&gt; Dashboard &lt;/a&gt; &lt;a href="/ui/categories" class="nav-link text-white "&gt; &lt;i class="bi bi-tags me-2"&gt;&lt;/i&gt; Categories &lt;/a&gt; &lt;a href="/ui/plants" class="nav-link text-white "&gt; &lt;i class="bi bi-flower1 me-2"&gt;&lt;/i&gt; Plants &lt;/a&gt; &lt;a href="/ui/sales" class="nav-link text-white "&gt; &lt;i class="bi bi-currency-rupee me-2"&gt;&lt;/i&gt; Sales &lt;/a&gt; &lt;a href="javascript:void(0);" class="nav-link text-white disabled" data-bs-toggle="tooltip" title="Inventory page coming soon"&gt; &lt;i class="bi bi-box-seam me-2"&gt;&lt;/i&gt; Inventory &lt;/a&gt;<br/>
+     &lt;hr class="text-secondary"&gt;&lt;a href="/ui/logout" class="nav-link text-danger"&gt; &lt;i class="bi bi-box-arrow-right me-2"&gt;&lt;/i&gt; Logout &lt;/a&gt;<br/>
+    &lt;/div&gt;&lt;!-- ✅ MAIN AREA --&gt;<br/>
+    &lt;div class="main-content"&gt;<br/>
+     &lt;div class="header"&gt;<br/>
+      &lt;h2&gt;🌸 QA Training Application&lt;/h2&gt;<br/>
+     &lt;/div&gt;<br/>
+     &lt;div&gt;<br/>
+      &lt;h3 class="mb-4"&gt;Categories&lt;/h3&gt;&lt;!-- ================= FILTER FORM ================= --&gt;<br/>
+      &lt;form method="get" class="row g-2 mb-3"&gt;&lt;!-- Search by Name --&gt;<br/>
+       &lt;div class="col-md-4"&gt;&lt;input type="text" class="form-control" name="name" placeholder="Search sub category" value=""&gt;<br/>
+       &lt;/div&gt;&lt;!-- Parent Filter --&gt;<br/>
+       &lt;div class="col-md-4"&gt;&lt;select class="form-select" name="parentId"&gt; &lt;option value=""&gt;All Parents&lt;/option&gt; &lt;option value="1"&gt;Ferns&lt;/option&gt; &lt;option value="3"&gt;Roses&lt;/option&gt; &lt;option value="4"&gt;TmpDel&lt;/option&gt; &lt;/select&gt;<br/>
+       &lt;/div&gt;&lt;!-- Buttons --&gt;<br/>
+       &lt;div class="col-md-4"&gt;&lt;button class="btn btn-primary me-2" type="submit"&gt;Search&lt;/button&gt; &lt;a href="/ui/categories" class="btn btn-outline-secondary"&gt;Reset&lt;/a&gt;<br/>
+       &lt;/div&gt;<br/>
+      &lt;/form&gt;&lt;!--    &lt;div th:if="${error}" class="alert alert-danger alert-dismissible fade show"&gt;--&gt; &lt;!--      &lt;span th:text="${error}"&gt;&lt;/span&gt;--&gt; &lt;!--      &lt;button type="button" class="btn-close" data-bs-dismiss="alert"&gt;&lt;/button&gt;--&gt; &lt;!--    &lt;/div&gt;--&gt; &lt;!--    &lt;div th:if="${success}" class="alert alert-success alert-dismissible fade show"&gt;--&gt; &lt;!--      &lt;span th:text="${success}"&gt;&lt;/span&gt;--&gt; &lt;!--      &lt;button type="button" class="btn-close" data-bs-dismiss="alert"&gt;&lt;/button&gt;--&gt; &lt;!--    &lt;/div&gt;--&gt; &lt;!-- ================= TABLE ================= --&gt;<br/>
+      &lt;table class="table table-striped table-bordered"&gt;<br/>
+       &lt;thead class="table-dark"&gt;<br/>
+        &lt;tr&gt;&lt;!-- ID --&gt;<br/>
+         &lt;th&gt;&lt;a class="text-white text-decoration-none" href="/ui/categories?page=0&amp;sortField=id&amp;sortDir=desc&amp;name=&amp;parentId="&gt; ID &lt;span&gt; ↑&lt;/span&gt; &lt;/a&gt;&lt;/th&gt;&lt;!-- NAME --&gt;<br/>
+         &lt;th&gt;&lt;a class="text-white text-decoration-none" href="/ui/categories?page=0&amp;sortField=name&amp;sortDir=asc&amp;name=&amp;parentId="&gt; Name &lt;/a&gt;&lt;/th&gt;&lt;!-- PARENT --&gt;<br/>
+         &lt;th&gt;&lt;a class="text-white text-decoration-none" href="/ui/categories?page=0&amp;sortField=parent.name&amp;sortDir=asc&amp;name=&amp;parentId="&gt; Parent &lt;/a&gt;&lt;/th&gt;<br/>
+         &lt;th&gt;Actions&lt;/th&gt;<br/>
+        &lt;/tr&gt;<br/>
+       &lt;/thead&gt;<br/>
+       &lt;tbody&gt;&lt;!-- DATA ROWS --&gt;<br/>
+        &lt;tr&gt;<br/>
+         &lt;td&gt;4&lt;/td&gt;<br/>
+         &lt;td&gt;TmpDel&lt;/td&gt;<br/>
+         &lt;td&gt;-&lt;/td&gt;<br/>
+         &lt;td&gt;&lt;!-- Edit --&gt; &lt;a href="/ui/categories/edit/4" class="btn btn-sm btn-outline-primary me-1" title="Edit" disabled&gt; &lt;i class="bi bi-pencil-square"&gt;&lt;/i&gt; &lt;/a&gt; &lt;!-- Delete --&gt;<br/>
+          &lt;form action="/ui/categories/delete/4" method="post" style="display:inline" onsubmit="return confirm('Delete this category?');"&gt;&lt;button class="btn btn-sm btn-outline-danger" title="Delete" disabled&gt; &lt;i class="bi bi-trash"&gt;&lt;/i&gt; &lt;/button&gt;<br/>
+          &lt;/form&gt;&lt;/td&gt;<br/>
+        &lt;/tr&gt;<br/>
+        &lt;tr&gt;<br/>
+         &lt;td&gt;3&lt;/td&gt;<br/>
+         &lt;td&gt;Roses&lt;/td&gt;<br/>
+         &lt;td&gt;-&lt;/td&gt;<br/>
+         &lt;td&gt;&lt;!-- Edit --&gt; &lt;a href="/ui/categories/edit/3" class="btn btn-sm btn-outline-primary me-1" title="Edit" disabled&gt; &lt;i class="bi bi-pencil-square"&gt;&lt;/i&gt; &lt;/a&gt; &lt;!-- Delete --&gt;<br/>
+          &lt;form action="/ui/categories/delete/3" method="post" style="display:inline" onsubmit="return confirm('Delete this category?');"&gt;&lt;button class="btn btn-sm btn-outline-danger" title="Delete" disabled&gt; &lt;i class="bi bi-trash"&gt;&lt;/i&gt; &lt;/button&gt;<br/>
+          &lt;/form&gt;&lt;/td&gt;<br/>
+        &lt;/tr&gt;<br/>
+        &lt;tr&gt;<br/>
+         &lt;td&gt;1&lt;/td&gt;<br/>
+         &lt;td&gt;Ferns&lt;/td&gt;<br/>
+         &lt;td&gt;-&lt;/td&gt;<br/>
+         &lt;td&gt;&lt;!-- Edit --&gt; &lt;a href="/ui/categories/edit/1" class="btn btn-sm btn-outline-primary me-1" title="Edit" disabled&gt; &lt;i class="bi bi-pencil-square"&gt;&lt;/i&gt; &lt;/a&gt; &lt;!-- Delete --&gt;<br/>
+          &lt;form action="/ui/categories/delete/1" method="post" style="display:inline" onsubmit="return confirm('Delete this category?');"&gt;&lt;button class="btn btn-sm btn-outline-danger" title="Delete" disabled&gt; &lt;i class="bi bi-trash"&gt;&lt;/i&gt; &lt;/button&gt;<br/>
+          &lt;/form&gt;&lt;/td&gt;<br/>
+        &lt;/tr&gt;&lt;!-- EMPTY STATE --&gt;<br/>
+       &lt;/tbody&gt;<br/>
+      &lt;/table&gt;&lt;!-- ================= PAGINATION ================= --&gt;<br/>
+     &lt;/div&gt;<br/>
+    &lt;/div&gt;<br/>
+   &lt;/div&gt;<br/>
+  &lt;/div&gt;<br/>
+  &lt;div class="modal fade" id="deleteModal" tabindex="-1"&gt;<br/>
+   &lt;div class="modal-dialog"&gt;<br/>
+    &lt;div class="modal-content"&gt;<br/>
+     &lt;div class="modal-header"&gt;<br/>
+      &lt;h5 class="modal-title"&gt;Confirm Delete&lt;/h5&gt;&lt;button type="button" class="btn-close" data-bs-dismiss="modal"&gt;&lt;/button&gt;<br/>
+     &lt;/div&gt;<br/>
+     &lt;div class="modal-body"&gt;<br/>
+      Are you sure you want to delete &lt;strong id="categoryName"&gt;&lt;/strong&gt;?<br/>
+     &lt;/div&gt;<br/>
+     &lt;div class="modal-footer"&gt;<br/>
+      &lt;form id="deleteForm" method="post"&gt;&lt;button type="button" class="btn btn-secondary" data-bs-dismiss="modal"&gt;Cancel&lt;/button&gt; &lt;button type="submit" class="btn btn-danger"&gt;Delete&lt;/button&gt;<br/>
+      &lt;/form&gt;<br/>
+     &lt;/div&gt;<br/>
+    &lt;/div&gt;<br/>
+   &lt;/div&gt;<br/>
+  &lt;/div&gt;<br/>
+  &lt;script&gt;<br/>
+  const deleteModal = document.getElementById('deleteModal');<br/>
+<br/>
+  deleteModal.addEventListener('show.bs.modal', function (event) {<br/>
+    const button = event.relatedTarget;<br/>
+    const id = button.getAttribute('data-id');<br/>
+    const name = button.getAttribute('data-name');<br/>
+<br/>
+    document.getElementById('categoryName').textContent = name;<br/>
+    document.getElementById('deleteForm').action =<br/>
+        '/ui/categories/delete/' + id;<br/>
+  });<br/>
+&lt;/script&gt;<br/>
+  &lt;script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"&gt;&lt;/script&gt;<br/>
+ &lt;/body&gt;<br/>
+&lt;/html&gt;</code></pre></div></body></html>

@@ -35,13 +35,14 @@ Feature: Authentication Module - API
     And the error response should match the Swagger ErrorResponse schema
     And the auth response should not contain a token
 
-  # CSV expected 200/204 with the session invalidated. The app is stateless and has
-  # no /api/auth/logout endpoint, so the JWT keeps working afterwards (divergence / bug candidate).
-  @T-API-15 @Admin @API @215543T
-  Scenario: T-API-15 - Logout does not invalidate the stateless JWT
+  # CSV: logout must return 200/204 AND invalidate the session. The app is stateless
+  # with no /api/auth/logout endpoint, so the JWT keeps working -> this asserts the
+  # required invalidation and FAILS (BUG: logout does not end the session).
+  @T-API-15 @Admin @API @215543T @bug
+  Scenario: T-API-15 - Logout must invalidate the admin session token
     Given I have an admin API token
     When I call the logout endpoint with the token
-    Then the token should still be accepted for "/api/categories"
+    Then the token should be rejected for "/api/categories"
 
   @T-API-16 @Admin @User @API @215543T
   Scenario: T-API-16 - Login token carries the correct role per user

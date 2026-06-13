@@ -86,10 +86,12 @@ public class ApiAuthSteps {
         assertThat(decodeRoles(jwt)).contains(expectedRole);
     }
 
-    @Then("the token should still be accepted for {string}")
-    public void tokenStillAccepted(String path) {
+    @Then("the token should be rejected for {string}")
+    public void tokenRejectedAfterLogout(String path) {
         Response check = authApi.getWithToken(path, token);
-        assertThat(check.getStatusCode()).isEqualTo(200);
+        assertThat(check.getStatusCode())
+                .as("after logout the session token must be rejected (401)")
+                .isEqualTo(401);
     }
 
     // ── Swagger contract: response-schema assertions ────────────────────────

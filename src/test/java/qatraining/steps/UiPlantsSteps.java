@@ -114,6 +114,7 @@ public class UiPlantsSteps {
 
     // T-UI-21: Admin controls visible
 
+    @Then("validate the {string} button should be visible on the plants page")
     @Then("the {string} button should be visible on the plants page")
     public void verifyAddPlantButtonVisible(String buttonName) {
         assertThat(plantsListPage.isAddPlantButtonVisible())
@@ -121,12 +122,14 @@ public class UiPlantsSteps {
                 .isTrue();
     }
 
+    @Then("validate the plants table should display columns {string}, {string}, {string}, {string}, and {string}")
     @Then("the plants table should display columns {string}, {string}, {string}, {string}, and {string}")
     public void verifyPlantTableColumns(String c1, String c2, String c3, String c4, String c5) {
         List<String> headers = plantsListPage.getColumnHeaders();
         assertThat(headers).as("Plants table columns").contains(c1, c2, c3, c4, c5);
     }
 
+    @Then("validate the fourth column header in the plants table should be {string}")
     @Then("the fourth column header in the plants table should be {string}")
     public void verifyFourthColumnHeader(String expectedName) {
         List<String> headers = plantsListPage.getColumnHeaders();
@@ -137,6 +140,7 @@ public class UiPlantsSteps {
                 .isEqualTo(expectedName);
     }
 
+    @Then("validate each plant row should show Edit and Delete action icons")
     @Then("each plant row should show Edit and Delete action icons")
     public void verifyEditDeleteIconsPresent() {
         if (plantsListPage.getPlantRowCount() > 0) {
@@ -147,6 +151,7 @@ public class UiPlantsSteps {
         }
     }
 
+    @Then("validate the Plants navigation link should be active")
     @Then("the Plants navigation link should be active")
     public void verifyPlantsNavLinkActive() {
         assertThat(plantsListPage.isPlantsNavLinkActive())
@@ -189,6 +194,7 @@ public class UiPlantsSteps {
         addEditPlantPage.clickSave();
     }
 
+    @Then("validate I should be redirected to the plants list page")
     @Then("I should be redirected to the plants list page")
     public void verifyRedirectToPlantsListPage() {
         String url = plantsListPage.getDriver().getCurrentUrl();
@@ -199,6 +205,7 @@ public class UiPlantsSteps {
                 .doesNotContain("/ui/plants/edit");
     }
 
+    @Then("validate the success message {string} should be displayed on the plants page")
     @Then("the success message {string} should be displayed on the plants page")
     public void verifySuccessMessageOnPlantsPage(String expectedMsg) {
         assertThat(plantsListPage.isSuccessMessageDisplayed(expectedMsg))
@@ -206,6 +213,7 @@ public class UiPlantsSteps {
                 .isTrue();
     }
 
+    @Then("validate the plant {string} should appear in the plants list")
     @Then("the plant {string} should appear in the plants list")
     public void verifyPlantAppearsInList(String plantName) {
         assertThat(plantsListPage.isPlantInList(plantName))
@@ -220,6 +228,7 @@ public class UiPlantsSteps {
         addEditPlantPage.clearName();
     }
 
+    @Then("validate I should see plant name validation error containing {string}")
     @Then("I should see plant name validation error containing {string}")
     public void verifyPlantNameValidationError(String expected) {
         String actual = addEditPlantPage.getNameError();
@@ -229,6 +238,7 @@ public class UiPlantsSteps {
                         ? "required" : expected);
     }
 
+    @Then("validate I should see plant category validation error {string}")
     @Then("I should see plant category validation error {string}")
     public void verifyPlantCategoryValidationError(String expected) {
         String actual = addEditPlantPage.getCategoryError();
@@ -237,6 +247,7 @@ public class UiPlantsSteps {
                 .containsIgnoringCase(expected.substring(0, Math.min(10, expected.length())));
     }
 
+    @Then("validate I should see plant price validation error {string}")
     @Then("I should see plant price validation error {string}")
     public void verifyPlantPriceValidationError(String expected) {
         String actual = addEditPlantPage.getPriceError();
@@ -245,6 +256,7 @@ public class UiPlantsSteps {
                 .containsIgnoringCase("greater than 0");
     }
 
+    @Then("validate I should see plant quantity validation error {string}")
     @Then("I should see plant quantity validation error {string}")
     public void verifyPlantQuantityValidationError(String expected) {
         String actual = addEditPlantPage.getQuantityError();
@@ -265,6 +277,7 @@ public class UiPlantsSteps {
         addEditPlantPage.enterQuantity(quantity);
     }
 
+    @Then("validate a {string} badge should be visible on the plants page")
     @Then("a {string} badge should be visible on the plants page")
     public void verifyLowBadgeVisible(String badge) {
         assertThat(plantsListPage.isLowBadgeVisible())
@@ -292,6 +305,7 @@ public class UiPlantsSteps {
         plantsListPage.clickDeleteAtRow(0);
     }
 
+    @Then("validate I should see a plant deletion confirmation prompt with text {string}")
     @Then("I should see a plant deletion confirmation prompt with text {string}")
     public void verifyPlantDeletionPrompt(String expectedText) {
         alertText = plantsListPage.getAlertTextAndAccept();
@@ -305,6 +319,7 @@ public class UiPlantsSteps {
         // Already accepted in the previous step via getAlertTextAndAccept()
     }
 
+    @Then("validate the plant count should be reduced by 1")
     @Then("the plant count should be reduced by 1")
     public void verifyPlantCountReducedByOne() {
         // Use API total count to avoid pagination affecting the page-level row count
@@ -325,6 +340,7 @@ public class UiPlantsSteps {
 
     // T-UI-26: User – no management controls
 
+    @Then("validate the {string} button should not be visible on the plants page")
     @Then("the {string} button should not be visible on the plants page")
     public void verifyButtonNotVisibleOnPlantsPage(String buttonName) {
         assertThat(plantsListPage.isAddPlantButtonVisible())
@@ -332,6 +348,7 @@ public class UiPlantsSteps {
                 .isFalse();
     }
 
+    @Then("validate no Edit or Delete icons should be present in any plant row")
     @Then("no Edit or Delete icons should be present in any plant row")
     public void verifyNoEditDeleteIcons() {
         assertThat(plantsListPage.areEditIconsPresent())
@@ -340,6 +357,7 @@ public class UiPlantsSteps {
                 .as("Delete icons should NOT be present for User").isFalse();
     }
 
+    @Then("validate the Actions column should not be visible in the plants table")
     @Then("the Actions column should not be visible in the plants table")
     public void verifyActionsColumnNotVisible() {
         assertThat(plantsListPage.isActionsColumnPresent())
@@ -349,6 +367,7 @@ public class UiPlantsSteps {
 
     // T-UI-30: Access denied for unauthorized plant operations
 
+    @Then("validate the user should not be able to access the plant add page")
     @Then("the user should not be able to access the plant add page")
     public void verifyPlantAddPageInaccessible() {
         String currentUrl = plantsListPage.getDriver().getCurrentUrl();
@@ -370,6 +389,7 @@ public class UiPlantsSteps {
         plantsListPage.clickSearch();
     }
 
+    @Then("validate the plant table should show only plants matching the search term")
     @Then("the plant table should show only plants matching the search term")
     public void verifyPlantSearchResults() {
         int rowCount = plantsListPage.getPlantRowCount();
@@ -390,6 +410,7 @@ public class UiPlantsSteps {
         selectedCategoryText = plantsListPage.getSelectedCategoryText();
     }
 
+    @Then("validate the plant table should show only plants of the selected category")
     @Then("the plant table should show only plants of the selected category")
     public void verifyPlantFilterByCategory() {
         int rowCount = plantsListPage.getPlantRowCount();
@@ -416,6 +437,7 @@ public class UiPlantsSteps {
         clickPlantColumnHeader(columnName);
     }
 
+    @Then("validate the plant list should be sorted by {string} ascending")
     @Then("the plant list should be sorted by {string} ascending")
     public void verifyPlantsSortedAscending(String columnName) {
         String currentUrl = plantsListPage.getDriver().getCurrentUrl();
@@ -432,6 +454,7 @@ public class UiPlantsSteps {
         }
     }
 
+    @Then("validate the plant list should be sorted by {string} descending")
     @Then("the plant list should be sorted by {string} descending")
     public void verifyPlantsSortedDescending(String columnName) {
         String currentUrl = plantsListPage.getDriver().getCurrentUrl();

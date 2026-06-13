@@ -99,6 +99,7 @@ public class ApiPlantsSteps {
         lastPlantsResponse = plantsApiActions.createPlant(token, categoryId, name, price, quantity);
     }
 
+    @Then("validate the plants API response status code should be {int}")
     @Then("the plants API response status code should be {int}")
     public void verifyPlantsApiStatusCode(int expectedStatus) {
         assertThat(lastPlantsResponse.getStatusCode())
@@ -106,6 +107,7 @@ public class ApiPlantsSteps {
                 .isEqualTo(expectedStatus);
     }
 
+    @Then("validate the created plant response should contain name {string}")
     @Then("the created plant response should contain name {string}")
     public void verifyCreatedPlantName(String expectedName) {
         String actualName = lastPlantsResponse.jsonPath().getString("name");
@@ -114,6 +116,7 @@ public class ApiPlantsSteps {
                 .isEqualTo(expectedName);
     }
 
+    @Then("validate the GET all plants response should include the newly created plant")
     @Then("the GET all plants response should include the newly created plant")
     public void verifyNewPlantInGetAllResponse() {
         Long createdId = lastPlantsResponse.jsonPath().getLong("id");
@@ -126,6 +129,7 @@ public class ApiPlantsSteps {
 
     // T-API-22 & T-API-23: Validation errors
 
+    @Then("validate the plants response body should contain validation message {string}")
     @Then("the plants response body should contain validation message {string}")
     public void verifyPlantsValidationMessage(String expectedMessage) {
         String body = lastPlantsResponse.getBody().asString();
@@ -163,6 +167,7 @@ public class ApiPlantsSteps {
         lastPlantsResponse = plantsApiActions.updatePlantWithFullBody(token, plantId, categoryId, name, price, quantity);
     }
 
+    @Then("validate the plants API response body should contain the updated plant name {string}")
     @Then("the plants API response body should contain the updated plant name {string}")
     public void verifyUpdatedPlantName(String expectedName) {
         String actualName = lastPlantsResponse.jsonPath().getString("name");
@@ -186,12 +191,14 @@ public class ApiPlantsSteps {
         lastPlantsResponse = plantsApiActions.getAllPlants(token);
     }
 
+    @Then("validate the response body should be a JSON array containing plant records")
     @Then("the response body should be a JSON array containing plant records")
     public void verifyResponseIsJsonArray() {
         List<?> plants = lastPlantsResponse.jsonPath().getList("");
         assertThat(plants).as("Response body should be a non-null JSON array").isNotNull();
     }
 
+    @Then("validate each plant record should contain id name price quantity and category fields")
     @Then("each plant record should contain id name price quantity and category fields")
     public void verifyPlantRecordFields() {
         List<Map<String, Object>> plants = lastPlantsResponse.jsonPath().getList("");
@@ -209,6 +216,7 @@ public class ApiPlantsSteps {
         lastPlantsResponse = plantsApiActions.getPlantById(token, plantId);
     }
 
+    @Then("validate the single plant response body should contain the correct plant ID")
     @Then("the single plant response body should contain the correct plant ID")
     public void verifySinglePlantResponseId() {
         Long returnedId = lastPlantsResponse.jsonPath().getLong("id");
@@ -224,6 +232,7 @@ public class ApiPlantsSteps {
         lastPlantsResponse = plantsApiActions.getPlantsPaged(token, page, size);
     }
 
+    @Then("validate the paged plants response should contain pagination fields content totalElements totalPages number and size")
     @Then("the paged plants response should contain pagination fields content totalElements totalPages number and size")
     public void verifyPagedPlantsResponseFields() {
         Map<String, Object> body = lastPlantsResponse.jsonPath().getMap("");

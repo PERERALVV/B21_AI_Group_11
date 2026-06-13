@@ -38,12 +38,14 @@ public class UiSalesSteps {
         salesListPage.open();
     }
 
+    @Then("validate I should see the sales list loaded with pagination")
     @Then("I should see the sales list loaded with pagination")
     public void verifySalesListLoadedWithPagination() {
         assertThat(salesListPage.getDriver().getTitle()).contains("Sales");
         assertThat(salesListPage.getSalesRowCount()).isGreaterThanOrEqualTo(0);
     }
 
+    @Then("validate the list should be sorted by {string} in descending order by default")
     @Then("the list should be sorted by {string} in descending order by default")
     public void verifyDefaultSorting(String columnName) {
         List<List<String>> data = salesListPage.getTableData();
@@ -125,6 +127,7 @@ public class UiSalesSteps {
         clickColumnHeader(columnName);
     }
 
+    @Then("validate the sales list should be sorted by {string} ascending")
     @Then("the sales list should be sorted by {string} ascending")
     public void verifySortedAscending(String columnName) {
         String currentUrl = salesListPage.getDriver().getCurrentUrl();
@@ -135,6 +138,7 @@ public class UiSalesSteps {
         }
     }
 
+    @Then("validate the sales list should be sorted by {string} descending")
     @Then("the sales list should be sorted by {string} descending")
     public void verifySortedDescending(String columnName) {
         String currentUrl = salesListPage.getDriver().getCurrentUrl();
@@ -222,6 +226,7 @@ public class UiSalesSteps {
         }
     }
 
+    @Then("validate I should see the {string} form")
     @Then("I should see the {string} form")
     public void verifyFormVisible(String formName) {
         assertThat(sellPlantPage.getDriver().getTitle()).contains("Sell Plant");
@@ -247,6 +252,7 @@ public class UiSalesSteps {
         sellPlantPage.enterQuantity(String.valueOf(q));
     }
 
+    @Then("validate I should be redirected to the sales list page")
     @Then("I should be redirected to the sales list page")
     public void verifyRedirectionToSalesList() {
         logger.info("[UiSalesSteps] Waiting for redirection to /ui/sales...");
@@ -255,6 +261,7 @@ public class UiSalesSteps {
         assertThat(salesListPage.getDriver().getCurrentUrl()).endsWith("/ui/sales");
     }
 
+    @Then("validate the sold plant's stock should be reduced by {int}")
     @Then("the sold plant's stock should be reduced by {int}")
     public void verifyStockReduction(int q) {
         sellPlantPage.open();
@@ -277,6 +284,7 @@ public class UiSalesSteps {
         sellPlantPage.clickSell();
     }
 
+    @Then("validate I should see the validation message {string} for the plant field")
     @Then("I should see the validation message {string} for the plant field")
     public void verifyPlantValidation(String expectedMsg) {
         assertThat(sellPlantPage.getPlantValidationError()).isEqualTo(expectedMsg);
@@ -287,6 +295,7 @@ public class UiSalesSteps {
         sellPlantPage.enterQuantity(String.valueOf(q));
     }
 
+    @Then("validate I should see the validation message {string} for the quantity field")
     @Then("I should see the validation message {string} for the quantity field")
     public void verifyQuantityValidation(String expectedMsg) {
         String actualMsg = sellPlantPage.getQuantityValidationError();
@@ -316,6 +325,7 @@ public class UiSalesSteps {
         salesListPage.clickDeleteButtonAtRow(0);
     }
 
+    @Then("validate I should see a confirmation prompt asking {string}")
     @Then("I should see a confirmation prompt asking {string}")
     public void verifyConfirmationPrompt(String expectedPrompt) {
         alertText = salesListPage.getAlertTextAndAccept();
@@ -327,6 +337,7 @@ public class UiSalesSteps {
         // Handled dynamically in verifyConfirmationPrompt
     }
 
+    @Then("validate the sale record should be removed from the list")
     @Then("the sale record should be removed from the list")
     public void verifySaleRemoved() {
         new org.openqa.selenium.support.ui.WebDriverWait(salesListPage.getDriver(), java.time.Duration.ofSeconds(10))
@@ -335,6 +346,7 @@ public class UiSalesSteps {
         assertThat(salesCountAfterDelete).isEqualTo(salesCountBeforeDelete - 1);
     }
 
+    @Then("validate the columns {string}, {string}, {string}, and {string} must display correct data")
     @Then("the columns {string}, {string}, {string}, and {string} must display correct data")
     public void verifyColumnsData(String col1, String col2, String col3, String col4) {
         List<List<String>> data = salesListPage.getTableData();
@@ -348,6 +360,7 @@ public class UiSalesSteps {
         }
     }
 
+    @Then("validate the table headers should be {string}, {string}, {string}, and {string}")
     @Then("the table headers should be {string}, {string}, {string}, and {string}")
     public void verifyTableHeaders(String h1, String h2, String h3, String h4) {
         List<String> actual = salesListPage.getHeaderTexts();
@@ -370,6 +383,7 @@ public class UiSalesSteps {
         salesListPage.open();
     }
 
+    @Then("validate I should see the text {string} in the table")
     @Then("I should see the text {string} in the table")
     public void verifyEmptyStateText(String expectedText) {
         assertThat(salesListPage.isEmptyStateDisplayed()).isTrue();
@@ -377,11 +391,13 @@ public class UiSalesSteps {
         assertThat(data).isEmpty();
     }
 
+    @Then("validate the {string} button should not be visible")
     @Then("the {string} button should not be visible")
     public void verifySellPlantHidden(String btn) {
         assertThat(salesListPage.isSellPlantButtonVisible()).isFalse();
     }
 
+    @Then("validate the {string} action buttons should not be visible for any record")
     @Then("the {string} action buttons should not be visible for any record")
     public void verifyDeleteButtonsHidden(String act) {
         assertThat(salesListPage.areDeleteButtonsVisible()).isFalse();
@@ -392,6 +408,7 @@ public class UiSalesSteps {
         salesListPage.getDriver().get("http://localhost:8080" + relativePath);
     }
 
+    @Then("validate I should be redirected to the 403-Access Denied page")
     @Then("I should be redirected to the 403-Access Denied page")
     public void verifyRedirectTo403() {
         assertThat(accessDeniedPage.isDisplayed()).isTrue();

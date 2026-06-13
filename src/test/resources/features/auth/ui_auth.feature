@@ -4,43 +4,43 @@ Feature: Authentication Module - UI
   # /ui/login?error, logout to /ui/login?logout.
 
   @T-UI-11 @Admin @UI @215543T
-  Scenario: T-UI-11 - Valid admin login redirects to the dashboard
+  Scenario: T-UI-11 - Verify that Valid admin login redirects to the dashboard
     Given I log in as Admin with username "admin" and password "admin123"
-    Then I should be on the dashboard page
+    Then validate I should be on the dashboard page
 
   @T-UI-12 @Anonymous @UI @215543T
-  Scenario: T-UI-12 - Empty username shows a validation message
+  Scenario: T-UI-12 - Verify that Empty username shows a validation message
     When I submit the login form with username "" and password "somepassword"
-    Then the username field should show validation error "Username is required"
+    Then validate the username field should show validation error "Username is required"
 
   @T-UI-13 @Anonymous @UI @215543T
-  Scenario: T-UI-13 - Empty password shows a validation message
+  Scenario: T-UI-13 - Verify that Empty password shows a validation message
     When I submit the login form with username "admin" and password ""
-    Then the password field should show validation error "Password is required"
+    Then validate the password field should show validation error "Password is required"
 
   @T-UI-14 @Anonymous @UI @215543T
-  Scenario: T-UI-14 - Invalid credentials show a global error message
+  Scenario: T-UI-14 - Verify that Invalid credentials show a global error message
     When I submit the login form with username "admin" and password "wrongpassword"
-    Then a global login error "Invalid username or password." should be displayed
+    Then validate a global login error "Invalid username or password." should be displayed
 
   @T-UI-15 @Admin @UI @215543T
-  Scenario: T-UI-15 - Admin logout shows a success message and ends the session
+  Scenario: T-UI-15 - Verify that Admin logout shows a success message and ends the session
     Given I log in as Admin with username "admin" and password "admin123"
     When I log out
-    Then a logout success message "You have been logged out successfully." should be displayed
+    Then validate a logout success message "You have been logged out successfully." should be displayed
     And I should be redirected to the login page
     When I force navigate to "/ui/dashboard"
-    Then I should be redirected to the login page
+    Then validate I should be redirected to the login page
 
   @T-UI-16 @User @UI @215543T
-  Scenario: T-UI-16 - Valid user login redirects to the dashboard
+  Scenario: T-UI-16 - Verify that Valid user login redirects to the dashboard
     Given I log in as User with username "testuser" and password "test123"
-    Then I should be on the dashboard page
+    Then validate I should be on the dashboard page
 
   @T-UI-17 @User @UI @215543T
-  Scenario: T-UI-17 - Dashboard displays summary information
+  Scenario: T-UI-17 - Verify that Dashboard displays summary information
     Given I log in as User with username "testuser" and password "test123"
-    Then I should be on the dashboard page
+    Then validate I should be on the dashboard page
     And the dashboard should display summary cards for "Categories", "Plants" and "Sales"
     And the dashboard summary cards should show numeric values
 
@@ -48,19 +48,19 @@ Feature: Authentication Module - UI
   # /ui/categories and /ui/plants never mark their nav link active (minor UI bug).
   # Verified here on /ui/sales, which a normal user can access.
   @T-UI-18 @User @UI @215543T
-  Scenario: T-UI-18 - Navigation menu highlights the active page
+  Scenario: T-UI-18 - Verify that Navigation menu highlights the active page
     Given I log in as User with username "testuser" and password "test123"
     When I force navigate to "/ui/sales"
-    Then the "Sales" navigation link should be active
+    Then validate the "Sales" navigation link should be active
 
   @T-UI-19 @Anonymous @UI @215543T
-  Scenario: T-UI-19 - Unauthenticated access is redirected to login
+  Scenario: T-UI-19 - Verify that Unauthenticated access is redirected to login
     When I force navigate to "/ui/logout"
     And I force navigate to "/ui/categories"
-    Then I should be redirected to the login page
+    Then validate I should be redirected to the login page
 
   @T-UI-20 @User @UI @215543T
-  Scenario: T-UI-20 - Normal user is blocked from an admin-only page (403)
+  Scenario: T-UI-20 - Verify that Normal user is blocked from an admin-only page (403)
     Given I log in as User with username "testuser" and password "test123"
     When I force navigate to "/ui/categories/add"
-    Then I should be redirected to the 403-Access Denied page
+    Then validate I should be redirected to the 403-Access Denied page
